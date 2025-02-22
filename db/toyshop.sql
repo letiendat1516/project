@@ -160,7 +160,139 @@ CREATE TABLE password_resets (
 );
 
 select * from password_resets
-SELECT pr.*, u.email, u.full_name 
-FROM password_resets pr
-INNER JOIN Users u ON pr.user_id = u.user_id
-WHERE pr.token = 'token' AND pr.expiry_date > GETDATE();
+select * from Users
+
+-- Stored procedure để kiểm tra token và cập nhật mật khẩu
+CREATE PROCEDURE sp_ResetPassword
+    @token VARCHAR(255),
+    @newPassword VARCHAR(255)
+AS
+BEGIN
+    DECLARE @userId INT
+    
+    -- Kiểm tra token và lấy user_id
+    SELECT @userId = pr.user_id
+    FROM password_resets pr
+    WHERE pr.token = @token 
+    AND pr.expiry_date > GETDATE()
+    
+    IF @userId IS NOT NULL
+    BEGIN
+        -- Cập nhật mật khẩu
+        UPDATE Users 
+        SET password = @newPassword
+        WHERE user_id = @userId
+        
+        -- Xóa token đã sử dụng
+        DELETE FROM password_resets 
+        WHERE token = @token
+        
+        SELECT 1 as Success -- Thành công
+    END
+    ELSE
+    BEGIN
+        SELECT 0 as Success -- Token không hợp lệ hoặc hết hạn
+    END
+END
+
+SELECT TOP 3 *
+FROM products
+ORDER BY product_id DESC;
+
+
+
+
+
+
+-- 1. Thêm dữ liệu vào bảng Categories
+INSERT INTO Categories (category_name) VALUES 
+(N'Điện thoại'),
+(N'Laptop'),
+(N'Tablet'),
+(N'Phụ kiện');
+
+-- 2. Thêm dữ liệu vào bảng Products
+INSERT INTO Products (name, description, price, stock_quantity, category_id, image_url) VALUES
+-- Điện thoại (category_id = 1)
+(N'iPhone 14 Pro Max', 
+N'iPhone 14 Pro Max 128GB - Smartphone cao cấp với màn hình 6.7 inch, chip A16 Bionic',
+27990000.00, 
+50,
+1,
+'images/products/iphone14promax.jpg'),
+
+(N'Samsung Galaxy S23 Ultra', 
+N'Samsung Galaxy S23 Ultra với bút S-Pen, camera 200MP, chip Snapdragon 8 Gen 2',
+25990000.00,
+45,
+1,
+'images/products/s23ultra.jpg'),
+
+(N'Xiaomi 13 Pro',
+N'Xiaomi 13 Pro với camera Leica, chip Snapdragon 8 Gen 2, sạc nhanh 120W',
+22990000.00,
+30,
+1,
+'images/products/xiaomi13pro.jpg'),
+
+-- Laptop (category_id = 2)
+(N'MacBook Pro 14 M2',
+N'Laptop MacBook Pro 14 inch với chip M2 Pro, 16GB RAM, 512GB SSD',
+45990000.00,
+25,
+2,
+'images/products/macbookpro14.jpg'),
+
+(N'Dell XPS 13 Plus',
+N'Dell XPS 13 Plus với Intel Core i7 gen 12, 16GB RAM, 512GB SSD',
+35990000.00,
+20,
+2,
+'images/products/dellxps13.jpg'),
+
+-- Tablet (category_id = 3)
+(N'iPad Pro 12.9 2022',
+N'iPad Pro 12.9 inch 2022 với chip M2, màn hình Mini LED, hỗ trợ Apple Pencil 2',
+28990000.00,
+35,
+3,
+'images/products/ipadpro2022.jpg'),
+
+(N'Samsung Galaxy Tab S9 Ultra',
+N'Samsung Galaxy Tab S9 Ultra với màn hình 14.6 inch, S-Pen, chip Snapdragon 8 Gen 2',
+24990000.00,
+25,
+3,
+'images/products/tabs9ultra.jpg'),
+
+-- Phụ kiện (category_id = 4)
+(N'Apple AirPods Pro 2',
+N'Tai nghe không dây Apple AirPods Pro 2 với chống ồn chủ động, âm thanh không gian',
+5990000.00,
+100,
+4,
+'images/products/airpodspro2.jpg'),
+
+(N'Samsung Galaxy Watch 5 Pro',
+N'Đồng hồ thông minh Samsung Galaxy Watch 5 Pro với GPS, đo sức khỏe',
+8990000.00,
+40,
+4,
+'images/products/watch5pro.jpg'),
+
+(N'Anker PowerCore 26800',
+N'Pin sạc dự phòng Anker PowerCore 26800mAh với 3 cổng USB',
+1290000.00,
+150,
+4,
+'images/products/anker26800.jpg');
+
+
+-- Kiểm tra dữ liệu Categories
+SELECT * FROM Categories;
+
+-- Kiểm tra dữ liệu Products
+SELECT p.*, c.category_name 
+FROM Products p
+JOIN Categories c ON p.category_id = c.category_id
+ORDER BY p.product_id;
