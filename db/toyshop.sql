@@ -212,14 +212,24 @@ INSERT INTO Categories (category_name) VALUES
 (N'Phụ kiện');
 
 -- 2. Thêm dữ liệu vào bảng Products
-INSERT INTO Products (name, description, price, stock_quantity, category_id, image_url) VALUES
--- Điện thoại (category_id = 1)
+INSERT INTO Products (name, description, price, stock_quantity, category_id, image_url) 
+VALUES
 (N'iPhone 14 Pro Max', 
 N'iPhone 14 Pro Max 128GB - Smartphone cao cấp với màn hình 6.7 inch, chip A16 Bionic',
 27990000.00, 
 50,
 1,
-'images/products/iphone14promax.jpg'),
+'resources/product/figure/a.png');
+
+INSERT INTO Products (name, description, price, stock_quantity, category_id, image_url) 
+VALUES
+(N'iPhone 14 Pro Max', 
+N'iPhone 14 Pro Max 128GB - Smartphone cao cấp với màn hình 6.7 inch, chip A16 Bionic',
+27990000.00, 
+50,
+1,
+'resources/product/figure/sex.jpg');
+
 
 (N'Samsung Galaxy S23 Ultra', 
 N'Samsung Galaxy S23 Ultra với bút S-Pen, camera 200MP, chip Snapdragon 8 Gen 2',
@@ -289,10 +299,11 @@ N'Pin sạc dự phòng Anker PowerCore 26800mAh với 3 cổng USB',
 
 
 -- Kiểm tra dữ liệu Categories
-SELECT * FROM Categories;
+select * FROM Products;
 
 -- Kiểm tra dữ liệu Products
 SELECT p.*, c.category_name 
 FROM Products p
 JOIN Categories c ON p.category_id = c.category_id
 ORDER BY p.product_id;
+

@@ -1,49 +1,49 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
-/**
- *
- * @author IUHADU
- */
+import java.sql.Timestamp;
+
 public class Product {
-    private int productID;
-    private String pname;
+    private int productId;
+    private String name;
     private String description;
     private double price;
-    private int stock;
-    private int category;
-    private String image;
-
+    private int stockQuantity;
+    private int categoryId;
+    private String imageUrl;
+    private Timestamp createdAt;
+    
+    // Constructor mặc định
     public Product() {
     }
-
-    public Product(int productID, String pname, String description, double price, int stock, int category, String image) {
-        this.productID = productID;
-        this.pname = pname;
+    
+    // Constructor đầy đủ
+    public Product(int productId, String name, String description, double price, 
+                  int stockQuantity, int categoryId, String imageUrl, Timestamp createdAt) {
+        this.productId = productId;
+        this.name = name;
         this.description = description;
         this.price = price;
-        this.stock = stock;
-        this.category = category;
-        this.image = image;
+        this.stockQuantity = stockQuantity;
+        this.categoryId = categoryId;
+        this.imageUrl = imageUrl;
+        this.createdAt = createdAt;
+    }
+    
+    // Getters và Setters
+    public int getProductId() {
+        return productId;
     }
 
-    public int getProductID() {
-        return productID;
+    public void setProductId(int productId) {
+        this.productId = productId;
     }
 
-    public void setProductID(int productID) {
-        this.productID = productID;
+    public String getName() {
+        return name;
     }
 
-    public String getPname() {
-        return pname;
-    }
-
-    public void setPname(String pname) {
-        this.pname = pname;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {
@@ -62,28 +62,35 @@ public class Product {
         this.price = price;
     }
 
-    public int getStock() {
-        return stock;
+    public int getStockQuantity() {
+        return stockQuantity;
     }
 
-    public void setStock(int stock) {
-        this.stock = stock;
+    public void setStockQuantity(int stockQuantity) {
+        this.stockQuantity = stockQuantity;
     }
 
-    public int getCategory() {
-        return category;
+    public int getCategoryId() {
+        return categoryId;
     }
 
-    public void setCategory(int category) {
-        this.category = category;
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
     }
 
-    public String getImage() {
-        return image;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
-    
+
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
 }

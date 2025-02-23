@@ -15,7 +15,7 @@ import model.Product;
 public class UserDAO {
 
     private DBContext db;
-    
+
     public UserDAO() {
         db = new DBContext(); // Khởi tạo DBContext trong constructor
     }
@@ -108,28 +108,37 @@ public class UserDAO {
             }
         }
     }
-       Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-        public List<Product> GetAllPproduct(){
-            List<Product> list = new ArrayList<>();
-            String query ="SELECT TOP 3 *\n" +
-"FROM products\n" +
-"ORDER BY product_id DESC;";
-            try {
-                 conn= new DBContext().getConnection();
-            stmt=conn.prepareStatement(query);
-            rs=stmt.executeQuery();
-                while (rs.next()) {                    
-                    list.add(new Product( rs.getInt(1), rs.getString(2),
-                            rs.getString(3), rs.getDouble(4),
-                            rs.getInt(5), rs.getInt(6), rs.getString(7)));
-                }
-            } catch (Exception e) {
+    Connection conn = null;
+    PreparedStatement stmt = null;
+    ResultSet rs = null;
+
+    public List<Product> GetAllPproduct() {
+        List<Product> list = new ArrayList<>();
+        String query = "SELECT TOP 3 *\n"
+                + "FROM products\n"
+                + "ORDER BY product_id DESC;";
+        try {
+            conn = new DBContext().getConnection();
+            stmt = conn.prepareStatement(query);
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+                list.add(new Product(
+                        rs.getInt("product_id"), // id từ database
+                        rs.getString("name"), // tên sản phẩm
+                        rs.getString("description"), // mô tả sản phẩm
+                        rs.getDouble("price"), // giá
+                        rs.getInt("stock_quantity"), // số lượng tồn kho
+                        rs.getInt("category_id"), // id danh mục
+                        rs.getString("image_url"), // đường dẫn ảnh
+                        rs.getTimestamp("created_at") // thời gian tạo
+                ));
+
             }
-           
-        return list;
-            
+        } catch (Exception e) {
         }
+
+        return list;
+
+    }
 
 }

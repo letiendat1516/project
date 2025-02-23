@@ -5,6 +5,7 @@
 --%>
 
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="vi">
@@ -478,56 +479,52 @@
             <div class="container">
                 <h2 class="text-center mb-5">Sản phẩm nổi bật</h2>
                 <div class="row">
-                    <!-- Product 1 -->
-                    <div class="col-md-4 mb-4">
-                        <div class="product-card">
-                            <div class="product-image">
-                                <img src="${pageContext.request.contextPath}/resources/images/shinwoo.jpg" alt="ShinWoo">
+                    <c:choose>
+                        <c:when test="${not empty featuredProducts}">
+                            <c:forEach items="${featuredProducts}" var="product">
+                                <div class="col-md-4 mb-4">
+                                    <div class="product-card">
+                                        <div class="product-image">
+                                            <c:choose>
+                                                <c:when test="${not empty product.imageUrl}">
+                                                    <img src="${pageContext.request.contextPath}/${product.imageUrl}" 
+                                                         alt="${product.name}">
+                                                </c:when>
+                                            </c:choose>
+                                        </div>
+                                        <div class="product-info">
+                                            <h3 class="product-title">${product.name}</h3>
+                                            <p class="product-price">
+                                                <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="₫"/>
+                                            </p>
+                                            <c:choose>
+                                                <c:when test="${product.stockQuantity > 0}">
+                                                    <button class="btn btn-primary w-100 add-to-cart" 
+                                                            data-id="${product.productId}">
+                                                        <i class="bi bi-cart-plus"></i> Thêm vào giỏ
+                                                    </button>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <button class="btn btn-secondary w-100" disabled>
+                                                        Hết hàng
+                                                    </button>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </div>
+                                    </div>
+                                </div>
+                            </c:forEach>
+                        </c:when>
+                        <c:otherwise>
+                            <div class="col-12 text-center">
+                                <p>Hiện chưa có sản phẩm nổi bật.</p>
                             </div>
-                            <div class="product-info">
-                                <h3 class="product-title">FINDING UNICORN ShinWoo The Cold Hug Series Plush Blind Box</h3>
-                                <p class="product-price">$13.9</p>
-                                <button class="btn btn-primary w-100 add-to-cart" data-id="1">
-                                    <i class="bi bi-cart-plus"></i> Thêm vào giỏ
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Product 2 -->
-                    <div class="col-md-4 mb-4">
-                        <div class="product-card">
-                            <div class="product-image">
-                                <img src="${pageContext.request.contextPath}/resources/images/rico.jpg" alt="RICO">
-                            </div>
-                            <div class="product-info">
-                                <h3 class="product-title">FINDING UNICORN Welcome! RICO Coco Mart Series Blind Box</h3>
-                                <p class="product-price">$12.9</p>
-                                <button class="btn btn-primary w-100 add-to-cart" data-id="2">
-                                    <i class="bi bi-cart-plus"></i> Thêm vào giỏ
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Product 3 -->
-                    <div class="col-md-4 mb-4">
-                        <div class="product-card">
-                            <div class="product-image">
-                                <img src="${pageContext.request.contextPath}/resources/images/molinta.jpg" alt="Molinta">
-                            </div>
-                            <div class="product-info">
-                                <h3 class="product-title">FINDING UNICORN Molinta Natural Series Blind Box</h3>
-                                <p class="product-price">$12.9</p>
-                                <button class="btn btn-primary w-100 add-to-cart" data-id="3">
-                                    <i class="bi bi-cart-plus"></i> Thêm vào giỏ
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                        </c:otherwise>
+                    </c:choose>
                 </div>
             </div>
         </section>
+
 
         <!-- Cart Offcanvas -->
         <div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvas">
