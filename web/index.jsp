@@ -436,9 +436,11 @@
         <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
             <div class="container">
                 <!-- Logo -->
-                <a class="navbar-brand" href="#">
-                    <img src="${pageContext.request.contextPath}/resources/logo.png" alt="Kingdoms Toys">
-                </a>
+<a class="navbar-brand" href="javascript:void(0);" onclick="window.location.href='${pageContext.request.contextPath}/home';">
+    <img src="${pageContext.request.contextPath}/resources/logo.png" alt="Kingdoms Toys">
+</a>
+
+
 
                 <!-- Toggle Button -->
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -449,6 +451,7 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <!-- Search Bar -->
                     <form action="search" method="post" class="d-flex mx-auto search-form">
+                        <input type="hidden" name="source" value="index">
                         <div class="input-group">
                             <input name="txt" class="form-control" type="text" placeholder="Tìm kiếm sản phẩm..." aria-label="Search">
                             <button class="btn btn-outline-danger" type="submit">
@@ -457,6 +460,7 @@
                         </div>
                     </form>
 
+                    <!-- tim kiem  -->
                     <!-- Center Navigation Links -->
                     <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
                         <li class="nav-item">

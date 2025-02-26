@@ -59,24 +59,33 @@ public class Search extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-//        processRequest(request, response);
-   
- try {
-      String s  = request.getParameter("txt");
-            ProductDAO productDAO = new ProductDAO();
-            // Lấy 6 sản phẩm mới nhất
-            List<Product> featuredProducts = productDAO.SearchProduct(s);
-            
-            request.setAttribute("featuredProducts", featuredProducts);
-            request.getRequestDispatcher("index.jsp").forward(request, response);
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.sendRedirect("error.jsp");
-        }
+
+protected void doPost(HttpServletRequest request, HttpServletResponse response)
+throws ServletException, IOException {
+    String s = request.getParameter("txt");
+    String source = request.getParameter("source"); // Thêm tham số để biết nguồn
+    
+    if (s == null || s.trim().isEmpty()) {
+        response.sendRedirect("products");
+        return;
     }
+    
+    ProductDAO productDAO = new ProductDAO();
+    List<Product> searchResults = productDAO.SearchProduct(s);
+    
+    if ("index".equals(source)) {
+        // Nếu tìm kiếm từ trang chủ
+        request.setAttribute("featuredProducts", searchResults);
+        request.setAttribute("searchQuery", s);
+        request.getRequestDispatcher("index.jsp").forward(request, response);
+    } else {
+        // Nếu tìm kiếm từ trang product hoặc mặc định
+        request.setAttribute("products", searchResults);
+        request.setAttribute("searchQuery", s);
+        request.getRequestDispatcher("product.jsp").forward(request, response);
+    }
+}
+
 
     /** 
      * Returns a short description of the servlet.
