@@ -436,11 +436,9 @@
         <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
             <div class="container">
                 <!-- Logo -->
-<a class="navbar-brand" href="javascript:void(0);" onclick="window.location.href='${pageContext.request.contextPath}/home';">
-    <img src="${pageContext.request.contextPath}/resources/logo.png" alt="Kingdoms Toys">
-</a>
-
-
+                <a class="navbar-brand" href="javascript:void(0);" onclick="window.location.href = '${pageContext.request.contextPath}/home';">
+                    <img src="${pageContext.request.contextPath}/resources/logo.png" alt="Kingdoms Toys">
+                </a>
 
                 <!-- Toggle Button -->
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -470,7 +468,7 @@
                             <a class="nav-link" href="products">Sản phẩm</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Liên hệ</a>
+                            <a class="nav-link" href="contact.jsp">Liên hệ</a>
                         </li>
                     </ul>
 
@@ -762,11 +760,6 @@
                             <div class="col-md-6 text-center text-md-start">
                                 <p class="mb-0">&copy; 2025 Kingdoms Toys. All rights reserved.</p>
                             </div>
-                            <div class="col-md-6 text-center text-md-end">
-                                <img src="${pageContext.request.contextPath}/resources/payment-methods.png" 
-                                     alt="Payment Methods" 
-                                     style="height: 30px;">
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -778,44 +771,44 @@
 
         <!-- Cart JavaScript -->
         <script>
-            let cart = [];
+                    let cart = [];
 
-            document.querySelectorAll('.add-to-cart').forEach(button => {
-                button.addEventListener('click', function () {
-                    const productId = this.dataset.id;
-                    const productCard = this.closest('.product-card');
-                    const product = {
-                        id: productId,
-                        name: productCard.querySelector('.product-title').textContent,
-                        price: productCard.querySelector('.product-price').textContent,
-                        image: productCard.querySelector('.product-image img').src,
-                        quantity: 1
-                    };
+                    document.querySelectorAll('.add-to-cart').forEach(button => {
+                        button.addEventListener('click', function () {
+                            const productId = this.dataset.id;
+                            const productCard = this.closest('.product-card');
+                            const product = {
+                                id: productId,
+                                name: productCard.querySelector('.product-title').textContent,
+                                price: productCard.querySelector('.product-price').textContent,
+                                image: productCard.querySelector('.product-image img').src,
+                                quantity: 1
+                            };
 
-                    addToCart(product);
-                    updateCartDisplay();
-                });
-            });
+                            addToCart(product);
+                            updateCartDisplay();
+                        });
+                    });
 
-            function addToCart(product) {
-                const existingItem = cart.find(item => item.id === product.id);
-                if (existingItem) {
-                    existingItem.quantity++;
-                } else {
-                    cart.push(product);
-                }
-                updateCartBadge();
-            }
+                    function addToCart(product) {
+                        const existingItem = cart.find(item => item.id === product.id);
+                        if (existingItem) {
+                            existingItem.quantity++;
+                        } else {
+                            cart.push(product);
+                        }
+                        updateCartBadge();
+                    }
 
-            function updateCartBadge() {
-                const badge = document.querySelector('.badge');
-                const total = cart.reduce((sum, item) => sum + item.quantity, 0);
-                badge.textContent = total;
-            }
+                    function updateCartBadge() {
+                        const badge = document.querySelector('.badge');
+                        const total = cart.reduce((sum, item) => sum + item.quantity, 0);
+                        badge.textContent = total;
+                    }
 
-            function updateCartDisplay() {
-                const cartItems = document.querySelector('.cart-items');
-                cartItems.innerHTML = cart.map(item => `
+                    function updateCartDisplay() {
+                        const cartItems = document.querySelector('.cart-items');
+                        cartItems.innerHTML = cart.map(item => `
                     <div class="cart-item">
                         <img src="${item.image}" alt="${item.name}">
                         <div class="cart-item-details">
@@ -830,28 +823,28 @@
                     </div>
                 `).join('');
 
-                updateCartTotal();
-            }
-
-            function updateQuantity(id, change) {
-                const item = cart.find(item => item.id === id);
-                if (item) {
-                    item.quantity += change;
-                    if (item.quantity <= 0) {
-                        cart = cart.filter(i => i.id !== id);
+                        updateCartTotal();
                     }
-                    updateCartDisplay();
-                    updateCartBadge();
-                }
-            }
 
-            function updateCartTotal() {
-                const total = cart.reduce((sum, item) => {
-                    const price = parseFloat(item.price.replace('$', ''));
-                    return sum + (price * item.quantity);
-                }, 0);
-                document.querySelector('.total-amount').textContent = `$${total.toFixed(2)}`;
-            }
+                    function updateQuantity(id, change) {
+                        const item = cart.find(item => item.id === id);
+                        if (item) {
+                            item.quantity += change;
+                            if (item.quantity <= 0) {
+                                cart = cart.filter(i => i.id !== id);
+                            }
+                            updateCartDisplay();
+                            updateCartBadge();
+                        }
+                    }
+
+                    function updateCartTotal() {
+                        const total = cart.reduce((sum, item) => {
+                            const price = parseFloat(item.price.replace('$', ''));
+                            return sum + (price * item.quantity);
+                        }, 0);
+                        document.querySelector('.total-amount').textContent = `$${total.toFixed(2)}`;
+                    }
         </script>
     </body>
 </html>

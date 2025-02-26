@@ -348,9 +348,10 @@
         <!-- Navigation -->
         <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
             <div class="container">
-                <a class="navbar-brand" href="#">
+                <a class="navbar-brand" href="javascript:void(0);" onclick="window.location.href = '${pageContext.request.contextPath}/home';">
                     <img src="${pageContext.request.contextPath}/resources/logo.png" alt="Kingdoms Toys">
                 </a>
+
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
@@ -493,15 +494,6 @@
         </div>
 
 
-                                        
-                                        
-                                        
-                                        
-                                        
-                                        
-                                        
-                                        
-                                        
 
 
         <!-- Products Grid -->
@@ -758,11 +750,6 @@
                         <div class="col-md-6 text-center text-md-start">
                             <p class="mb-0">&copy; 2025 Kingdoms Toys. All rights reserved.</p>
                         </div>
-                        <div class="col-md-6 text-center text-md-end">
-                            <img src="${pageContext.request.contextPath}/resources/payment-methods.png" 
-                                 alt="Payment Methods" 
-                                 style="height: 30px;">
-                        </div>
                     </div>
                 </div>
             </div>
@@ -790,50 +777,50 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        let cart = [];
+                    let cart = [];
 
-        // Add to Cart Function
-        document.querySelectorAll('.add-to-cart').forEach(button => {
-            button.addEventListener('click', function () {
-                const productId = this.dataset.id;
-                const productCard = this.closest('.product-card');
-                const productName = productCard.querySelector('.product-title').textContent;
-                const productPrice = productCard.querySelector('.product-price').textContent;
-                const productImage = productCard.querySelector('.product-image img').src;
+                    // Add to Cart Function
+                    document.querySelectorAll('.add-to-cart').forEach(button => {
+                        button.addEventListener('click', function () {
+                            const productId = this.dataset.id;
+                            const productCard = this.closest('.product-card');
+                            const productName = productCard.querySelector('.product-title').textContent;
+                            const productPrice = productCard.querySelector('.product-price').textContent;
+                            const productImage = productCard.querySelector('.product-image img').src;
 
-                addToCart({
-                    id: productId,
-                    name: productName,
-                    price: productPrice,
-                    image: productImage,
-                    quantity: 1
-                });
-            });
-        });
+                            addToCart({
+                                id: productId,
+                                name: productName,
+                                price: productPrice,
+                                image: productImage,
+                                quantity: 1
+                            });
+                        });
+                    });
 
-        function addToCart(product) {
-            const existingItem = cart.find(item => item.id === product.id);
+                    function addToCart(product) {
+                        const existingItem = cart.find(item => item.id === product.id);
 
-            if (existingItem) {
-                existingItem.quantity++;
-            } else {
-                cart.push(product);
-            }
+                        if (existingItem) {
+                            existingItem.quantity++;
+                        } else {
+                            cart.push(product);
+                        }
 
-            updateCartDisplay();
-            updateCartBadge();
-        }
+                        updateCartDisplay();
+                        updateCartBadge();
+                    }
 
-        function updateCartDisplay() {
-            const cartItems = document.querySelector('.cart-items');
-            cartItems.innerHTML = '';
-            let total = 0;
+                    function updateCartDisplay() {
+                        const cartItems = document.querySelector('.cart-items');
+                        cartItems.innerHTML = '';
+                        let total = 0;
 
-            cart.forEach(item => {
-                const itemTotal = parseFloat(item.price.replace('$', '')) * item.quantity;
-                total += itemTotal;
+                        cart.forEach(item => {
+                            const itemTotal = parseFloat(item.price.replace('$', '')) * item.quantity;
+                            total += itemTotal;
 
-                cartItems.innerHTML += `
+                            cartItems.innerHTML += `
                     <div class="cart-item mb-3">
                         <img src="${item.image}" alt="${item.name}" class="me-3" style="width: 50px; height: 50px; object-fit: cover;">
                         <div class="cart-item-details">
@@ -842,23 +829,23 @@
                         </div>
                     </div>
                 `;
-            });
+                        });
 
-            document.querySelector('.total-amount').textContent = `$${total.toFixed(2)}`;
-        }
+                        document.querySelector('.total-amount').textContent = `$${total.toFixed(2)}`;
+                    }
 
-        function updateCartBadge() {
-            const badge = document.querySelector('.cart-icon .badge');
-            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-            badge.textContent = totalItems;
-        }
+                    function updateCartBadge() {
+                        const badge = document.querySelector('.cart-icon .badge');
+                        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+                        badge.textContent = totalItems;
+                    }
 
-        // Load More Functionality
-        document.querySelector('.load-more button').addEventListener('click', function () {
-            // Add your load more logic here
-            this.textContent = 'Không còn sản phẩm';
-            this.disabled = true;
-        });
+                    // Load More Functionality
+                    document.querySelector('.load-more button').addEventListener('click', function () {
+                        // Add your load more logic here
+                        this.textContent = 'Không còn sản phẩm';
+                        this.disabled = true;
+                    });
     </script>
 </body>
 </html>
