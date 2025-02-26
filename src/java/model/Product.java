@@ -1,6 +1,7 @@
 package model;
 
 import java.sql.Timestamp;
+import java.util.Date;
 
 public class Product {
     private int productId;
@@ -12,11 +13,16 @@ public class Product {
     private String imageUrl;
     private Timestamp createdAt;
     
+    // Thêm các thuộc tính mới cho sản phẩm nổi bật
+    private boolean isFeatured;
+    private int featuredOrder;
+    private Date featuredUntil;
+    
     // Constructor mặc định
     public Product() {
     }
     
-    // Constructor đầy đủ
+    // Constructor đầy đủ hiện tại
     public Product(int productId, String name, String description, double price, 
                   int stockQuantity, int categoryId, String imageUrl, Timestamp createdAt) {
         this.productId = productId;
@@ -29,7 +35,24 @@ public class Product {
         this.createdAt = createdAt;
     }
     
-    // Getters và Setters
+    // Constructor đầy đủ với các thuộc tính nổi bật
+    public Product(int productId, String name, String description, double price, 
+                  int stockQuantity, int categoryId, String imageUrl, Timestamp createdAt,
+                  boolean isFeatured, int featuredOrder, Date featuredUntil) {
+        this.productId = productId;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.stockQuantity = stockQuantity;
+        this.categoryId = categoryId;
+        this.imageUrl = imageUrl;
+        this.createdAt = createdAt;
+        this.isFeatured = isFeatured;
+        this.featuredOrder = featuredOrder;
+        this.featuredUntil = featuredUntil;
+    }
+    
+    // Getters và Setters hiện có
     public int getProductId() {
         return productId;
     }
@@ -92,5 +115,30 @@ public class Product {
 
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
+    }
+    
+    // Thêm getters và setters cho các thuộc tính mới
+    public boolean getIsFeatured() {
+        return isFeatured;
+    }
+    
+    public void setIsFeatured(boolean isFeatured) {
+        this.isFeatured = isFeatured;
+    }
+    
+    public int getFeaturedOrder() {
+        return featuredOrder;
+    }
+    
+    public void setFeaturedOrder(int featuredOrder) {
+        this.featuredOrder = featuredOrder;
+    }
+    
+    public Date getFeaturedUntil() {
+        return featuredUntil;
+    }
+    
+    public void setFeaturedUntil(Date featuredUntil) {
+        this.featuredUntil = featuredUntil;
     }
 }

@@ -3,7 +3,7 @@ CREATE TABLE Roles (
     role_id INT IDENTITY(1,1) PRIMARY KEY,
     role_name VARCHAR(50) NOT NULL UNIQUE
 );
-
+select * from Roles
 -- 2. Tạo bảng Users (phụ thuộc vào Roles)
 CREATE TABLE Users (
     user_id INT IDENTITY(1,1) PRIMARY KEY,
@@ -17,6 +17,7 @@ CREATE TABLE Users (
     created_at DATETIME DEFAULT GETDATE(),
     FOREIGN KEY (role_id) REFERENCES Roles(role_id)
 );
+
 
 -- 3. Tạo bảng Categories (bảng độc lập)
 CREATE TABLE Categories (
@@ -36,6 +37,11 @@ CREATE TABLE Products (
     created_at DATETIME DEFAULT GETDATE(),
     FOREIGN KEY (category_id) REFERENCES Categories(category_id)
 );
+ALTER TABLE Products
+ADD is_featured BIT DEFAULT 0, -- Đánh dấu sản phẩm có phải là nổi bật hay không (0: không, 1: có)
+    featured_order INT NULL,   -- Thứ tự hiển thị của sản phẩm nổi bật
+    featured_until DATE NULL;  -- Ngày hết hạn của sản phẩm nổi bật (NULL nếu không giới hạn)
+	select * from Products
 
 -- 5. Tạo bảng Discounts (bảng độc lập)
 CREATE TABLE Discounts (
@@ -210,6 +216,12 @@ INSERT INTO Categories (category_name) VALUES
 (N'Laptop'),
 (N'Tablet'),
 (N'Phụ kiện');
+-- Thêm một số sản phẩm vào danh sách nổi bật
+INSERT INTO FeaturedProducts (product_id, featured_from, featured_until)
+VALUES 
+(42, GETDATE(), DATEADD(month, 3, GETDATE())), -- Sản phẩm ID 1, hiển thị đầu tiên, nổi bật trong 3 tháng
+(43, GETDATE(), DATEADD(month, 2, GETDATE())), -- Sản phẩm ID 3, hiển thị thứ hai, nổi bật trong 2 tháng
+(45, GETDATE(), DATEADD(month, 3, GETDATE())); -- Sản phẩm ID 5, hiển thị thứ ba, nổi bật trong 3 tháng
 
 -- 2. Thêm dữ liệu vào bảng Products
 INSERT INTO Products (name, description, price, stock_quantity, category_id, image_url) 
@@ -220,16 +232,15 @@ N'iPhone 14 Pro Max 128GB - Smartphone cao cấp với màn hình 6.7 inch, chip
 50,
 1,
 'resources/product/figure/a.png');
-
 INSERT INTO Products (name, description, price, stock_quantity, category_id, image_url) 
 VALUES
 (N'iPhone 14 Pro Max', 
 N'iPhone 14 Pro Max 128GB - Smartphone cao cấp với màn hình 6.7 inch, chip A16 Bionic',
 27990000.00, 
-50,
+1,
 1,
 'resources/product/figure/sex.jpg');
-
+select * from users
 
 (N'Samsung Galaxy S23 Ultra', 
 N'Samsung Galaxy S23 Ultra với bút S-Pen, camera 200MP, chip Snapdragon 8 Gen 2',
@@ -307,3 +318,18 @@ FROM Products p
 JOIN Categories c ON p.category_id = c.category_id
 ORDER BY p.product_id;
 
+select * from users
+delete from Products
+
+UPDATE Products
+SET is_featured = 1, 
+    featured_order = 1, 
+    featured_until = '2025-12-31'
+WHERE product_id = 42;
+
+-- Đánh dấu một sản phẩm khác là nổi bật
+UPDATE Products
+SET is_featured = 1, 
+    featured_order = 2, 
+    featured_until = '2025-11-30'
+WHERE product_id = 43;

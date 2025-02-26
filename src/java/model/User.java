@@ -11,7 +11,13 @@ import java.util.Date;
  * @author IUHADU
  */
 
+
 public class User {
+    // Constants cho các role
+    public static final int ROLE_ADMIN = 1;
+    public static final int ROLE_STAFF = 2;  // Thêm nếu cần
+    public static final int ROLE_USER = 3;
+    
     private int userId;
     private String fullName;
     private String email;
@@ -21,20 +27,80 @@ public class User {
     private boolean isActive;
     private Date createdAt;
     
-    // Constructor
+    // Constructor mặc định
     public User() {
         this.isActive = true;
-        this.roleId = 2; // Mặc định là USER
-        
+        this.roleId = ROLE_USER; // Sử dụng constant thay vì số trực tiếp
+        this.createdAt = new Date(); // Tự động set thời gian tạo
     }
-     public static final int ROLE_ADMIN = 1;
-    public static final int ROLE_USER = 2;
+    
+    // Constructor đầy đủ
+    public User(int userId, String fullName, String email, String phone, 
+                String password, int roleId, boolean isActive, Date createdAt) {
+        this.userId = userId;
+        this.fullName = fullName;
+        this.email = email;
+        this.phone = phone;
+        this.password = password;
+        this.roleId = roleId;
+        this.isActive = isActive;
+        this.createdAt = createdAt;
+    }
 
-    // Thêm phương thức kiểm tra role
+    // Các phương thức kiểm tra role
     public boolean isAdmin() {
         return roleId == ROLE_ADMIN;
     }
     
+    public boolean isUser() {
+        return roleId == ROLE_USER;
+    }
+    
+    public boolean isStaff() {
+        return roleId == ROLE_STAFF;
+    }
+    
+    // Phương thức validate
+    public boolean isValidEmail() {
+        return email != null && email.matches("^[A-Za-z0-9+_.-]+@(.+)$");
+    }
+    
+    public boolean isValidPhone() {
+        return phone != null && phone.matches("^\\d{10}$");
+    }
+    
+    // Phương thức toString() để debug
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", fullName='" + fullName + '\'' +
+                ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
+                ", roleId=" + roleId +
+                ", isActive=" + isActive +
+                ", createdAt=" + createdAt +
+                '}';
+    }
+
+    // Getters and Setters giữ nguyên
+    // ... (phần code getters/setters của bạn)
+    
+    // Thêm phương thức equals và hashCode
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return userId == user.userId;
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(userId);
+    }
+
+
     // Getters and Setters
 
     public int getUserId() {

@@ -5,6 +5,7 @@
 --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.*" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="vi">
@@ -367,10 +368,10 @@
 
                     <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link" href="index.jsp">Trang chủ</a>
+                            <a class="nav-link" href="home">Trang chủ</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" href="products.jsp">Sản phẩm</a>
+                            <a class="nav-link active" href="products">Sản phẩm</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Liên hệ</a>
@@ -423,290 +424,427 @@
             </div>
 
             <!-- Filter Section -->
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div class="d-flex justify-content-start mb-4">
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-outline-secondary d-flex align-items-center gap-2">
-                            <i class="bi bi-funnel"></i>
-                            Filter
-                        </button>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex justify-content-start mb-4">
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-secondary d-flex align-items-center gap-2">
+                <i class="bi bi-funnel"></i>
+                Filter
+            </button>
 
-                        <div class="dropdown">
-                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                Loại sản phẩm
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Tất Cả</a></li>
-                                <li><a class="dropdown-item" href="#">Túi Mù</a></li>
-                                <li><a class="dropdown-item" href="#">Lego</a></li>
-                                <li><a class="dropdown-item" href="#">Mô Hình</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="d-flex justify-content-end mb-4">
-                    <div class="d-flex align-items-center gap-2">
-                        <span class="text-secondary">Sắp Xếp</span>
-                        <div class="dropdown">
-                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                Đề Xuất
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="#">Đề Xuất</a></li>
-                                <li><a class="dropdown-item" href="#">Giá: Thấp Tới Cao</a></li>
-                                <li><a class="dropdown-item" href="#">Giá: Cao Tới Thấp</a></li>
-                                <li><a class="dropdown-item" href="#">Bảng chữ cái A-Z</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+            <div class="dropdown">
+                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    Loại sản phẩm
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="products">Tất Cả</a></li>
+                    <c:forEach items="${categories}" var="category">
+                        <li><a class="dropdown-item ${categoryId == category.categoryId ? 'active' : ''}" 
+                               href="products?category=${category.categoryId}${not empty sortBy ? '&sort='.concat(sortBy) : ''}">
+                            ${category.name}
+                        </a></li>
+                    </c:forEach>
+                </ul>
             </div>
+        </div>
+    </div>
+    <div class="d-flex justify-content-end mb-4">
+        <div class="d-flex align-items-center gap-2">
+            <span class="text-secondary">Sắp Xếp</span>
+            <div class="dropdown">
+                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    <c:choose>
+                        <c:when test="${sortBy == 'price_asc'}">Giá: Thấp Tới Cao</c:when>
+                        <c:when test="${sortBy == 'price_desc'}">Giá: Cao Tới Thấp</c:when>
+                        <c:when test="${sortBy == 'name_asc'}">Bảng chữ cái A-Z</c:when>
+                        <c:when test="${sortBy == 'newest'}">Mới nhất</c:when>
+                        <c:otherwise>Đề Xuất</c:otherwise>
+                    </c:choose>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item ${empty sortBy ? 'active' : ''}" 
+                           href="products${not empty categoryId ? '?category='.concat(categoryId) : ''}">
+                        Đề Xuất
+                    </a></li>
+                    <li><a class="dropdown-item ${sortBy == 'price_asc' ? 'active' : ''}" 
+                           href="products?sort=price_asc${not empty categoryId ? '&category='.concat(categoryId) : ''}">
+                        Giá: Thấp Tới Cao
+                    </a></li>
+                    <li><a class="dropdown-item ${sortBy == 'price_desc' ? 'active' : ''}" 
+                           href="products?sort=price_desc${not empty categoryId ? '&category='.concat(categoryId) : ''}">
+                        Giá: Cao Tới Thấp
+                    </a></li>
+                    <li><a class="dropdown-item ${sortBy == 'name_asc' ? 'active' : ''}" 
+                           href="products?sort=name_asc${not empty categoryId ? '&category='.concat(categoryId) : ''}">
+                        Bảng chữ cái A-Z
+                    </a></li>
+                    <li><a class="dropdown-item ${sortBy == 'newest' ? 'active' : ''}" 
+                           href="products?sort=newest${not empty categoryId ? '&category='.concat(categoryId) : ''}">
+                        Mới nhất
+                    </a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
             <!-- Products Grid -->
-            <div class="products-grid">
-                <c:forEach begin="1" end="36">
-                    <div class="product-card">
-                        <div class="product-image">
-                            <img src="${pageContext.request.contextPath}/resources/products/product${status.index}.jpg" 
-                                 alt="Product ${status.index}">
-                        </div>
-                        <div class="product-info">
-                            <h3 class="product-title">FINDING UNICORN Series ${status.index}</h3>
-                            <p class="product-price">$12.90</p>
-                            <button class="btn btn-primary w-100 add-to-cart" data-id="${status.index}">
-                                <i class="bi bi-cart-plus"></i> Thêm vào giỏ
-                            </button>
+            <div class="row">
+                <!-- Hiển thị tất cả sản phẩm -->
+<div class="col-12">
+    <h3 class="mb-3">Tất cả sản phẩm</h3>
+    <div class="row">
+        <c:choose>
+            <c:when test="${not empty products}">
+                <c:forEach items="${products}" var="product">
+                    <div class="col-md-3 mb-4">
+                        <div class="product-card">
+                            <div class="product-image">
+                                <c:choose>
+                                    <c:when test="${not empty product.imageUrl}">
+                                        <img src="${pageContext.request.contextPath}/${product.imageUrl}" 
+                                             alt="${product.name}">
+                                    </c:when>
+                                    <c:otherwise>
+                                        <img src="${pageContext.request.contextPath}/resources/no-image.png" 
+                                             alt="${product.name}">
+                                    </c:otherwise>
+                                </c:choose>
+                            </div>
+                            <div class="product-info">
+                                <h3 class="product-title">${product.name}</h3>
+                                <p class="product-price">
+                                    <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="₫"/>
+                                </p>
+
+                                <!-- Hiển thị trạng thái tồn kho -->
+                                <c:choose>
+                                    <c:when test="${product.stockQuantity > 10}">
+                                        <p class="stock in-stock">Còn hàng (${product.stockQuantity})</p>
+                                    </c:when>
+                                    <c:when test="${product.stockQuantity > 0 && product.stockQuantity <= 10}">
+                                        <p class="stock low-stock">Sắp hết hàng (Còn ${product.stockQuantity})</p>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <p class="stock out-stock">Hết hàng</p>
+                                    </c:otherwise>
+                                </c:choose>
+
+                                <!-- Nút thêm vào giỏ -->
+                                <c:choose>
+                                    <c:when test="${product.stockQuantity > 0}">
+                                        <button class="btn btn-primary w-100 add-to-cart" 
+                                                data-id="${product.productId}">
+                                            <i class="bi bi-cart-plus"></i> Thêm vào giỏ
+                                        </button>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <button class="btn btn-secondary w-100" disabled>
+                                            Hết hàng
+                                        </button>
+                                    </c:otherwise>
+                                </c:choose>
+                            </div>
                         </div>
                     </div>
                 </c:forEach>
-            </div>
-        </div>
+            </c:when>
+            <c:otherwise>
+                <div class="col-12 text-center">
+                    <p>Không tìm thấy sản phẩm nào.</p>
+                </div>
+            </c:otherwise>
+        </c:choose>
+    </div>
+</div>
 
-        <!-- Footer -->
-        <footer>
-            <div class="footer-content">
-                <div class="container-fluid p-0">
-                    <div class="container py-5">
-                        <div class="row g-4">
-                            <div class="col-lg-4 col-md-6">
-                                <h5 class="mb-4" style="color: var(--text-color);">Về Kingdoms Toys</h5>
-                                <div class="footer-about">
-                                    <img src="${pageContext.request.contextPath}/resources/logo.png" 
-                                         alt="Kingdoms Toys" 
-                                         class="mb-3" 
-                                         style="max-height: 60px;">
-                                    <p class="mb-4">Chúng tôi là đơn vị chuyên cung cấp các sản phẩm đồ chơi chất lượng cao, 
-                                        mang đến niềm vui và trải nghiệm tuyệt vời cho người sưu tầm.</p>
-                                    <div class="social-links">
-                                        <a href="#" class="me-3 text-decoration-none">
-                                            <i class="bi bi-facebook fs-5"></i>
-                                        </a>
-                                        <a href="#" class="me-3 text-decoration-none">
-                                            <i class="bi bi-instagram fs-5"></i>
-                                        </a>
-                                        <a href="#" class="me-3 text-decoration-none">
-                                            <i class="bi bi-tiktok fs-5"></i>
-                                        </a>
-                                        <a href="#" class="text-decoration-none">
-                                            <i class="bi bi-youtube fs-5"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
+<!-- Phân trang -->
+<c:if test="${totalPages > 1}">
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            <!-- Nút Previous -->
+            <c:choose>
+                <c:when test="${currentPage > 1}">
+                    <li class="page-item">
+                        <a class="page-link" href="products?page=${currentPage - 1}${not empty categoryId ? '&category='.concat(categoryId) : ''}${not empty sortBy ? '&sort='.concat(sortBy) : ''}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                </c:when>
+                <c:otherwise>
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                </c:otherwise>
+            </c:choose>
+            
+            <!-- Các số trang -->
+            <c:forEach begin="1" end="${totalPages}" var="i">
+                <c:choose>
+                    <c:when test="${currentPage == i}">
+                        <li class="page-item active">
+                            <a class="page-link" href="#">${i}</a>
+                        </li>
+                    </c:when>
+                    <c:otherwise>
+                        <li class="page-item">
+                            <a class="page-link" href="products?page=${i}${not empty categoryId ? '&category='.concat(categoryId) : ''}${not empty sortBy ? '&sort='.concat(sortBy) : ''}">${i}</a>
+                        </li>
+                    </c:otherwise>
+                </c:choose>
+            </c:forEach>
+            
+            <!-- Nút Next -->
+            <c:choose>
+                <c:when test="${currentPage < totalPages}">
+                    <li class="page-item">
+                        <a class="page-link" href="products?page=${currentPage + 1}${not empty categoryId ? '&category='.concat(categoryId) : ''}${not empty sortBy ? '&sort='.concat(sortBy) : ''}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </c:when>
+                <c:otherwise>
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </c:otherwise>
+            </c:choose>
+        </ul>
+    </nav>
+</c:if>
 
-                            <div class="col-lg-4 col-md-6">
-                                <h5 class="mb-4" style="color: var(--text-color);">Liên kết nhanh</h5>
-                                <div class="row">
-                                    <div class="col-6">
-                                        <ul class="list-unstyled footer-links">
-                                            <li class="mb-2">
-                                                <a href="#" class="text-decoration-none text-secondary">
-                                                    <i class="bi bi-chevron-right me-2"></i>Trang chủ
-                                                </a>
-                                            </li>
-                                            <li class="mb-2">
-                                                <a href="#" class="text-decoration-none text-secondary">
-                                                    <i class="bi bi-chevron-right me-2"></i>Sản phẩm
-                                                </a>
-                                            </li>
-                                            <li class="mb-2">
-                                                <a href="#" class="text-decoration-none text-secondary">
-                                                    <i class="bi bi-chevron-right me-2"></i>Về chúng tôi
-                                                </a>
-                                            </li>
-                                            <li class="mb-2">
-                                                <a href="#" class="text-decoration-none text-secondary">
-                                                    <i class="bi bi-chevron-right me-2"></i>Liên hệ
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="col-6">
-                                        <ul class="list-unstyled footer-links">
-                                            <li class="mb-2">
-                                                <a href="#" class="text-decoration-none text-secondary">
-                                                    <i class="bi bi-chevron-right me-2"></i>Chính sách
-                                                </a>
-                                            </li>
-                                            <li class="mb-2">
-                                                <a href="#" class="text-decoration-none text-secondary">
-                                                    <i class="bi bi-chevron-right me-2"></i>Điều khoản
-                                                </a>
-                                            </li>
-                                            <li class="mb-2">
-                                                <a href="#" class="text-decoration-none text-secondary">
-                                                    <i class="bi bi-chevron-right me-2"></i>FAQs
-                                                </a>
-                                            </li>
-                                            <li class="mb-2">
-                                                <a href="#" class="text-decoration-none text-secondary">
-                                                    <i class="bi bi-chevron-right me-2"></i>Blog
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
 
-                            <div class="col-lg-4 col-md-6">
-                                <h5 class="mb-4" style="color: var(--text-color);">Thông tin liên hệ</h5>
-                                <div class="footer-contact">
-                                    <div class="d-flex mb-3">
-                                        <i class="bi bi-geo-alt-fill me-3 fs-5"></i>
-                                        <p class="mb-0">123 Đường ABC, Quận XYZ, TP.HCM</p>
-                                    </div>
-                                    <div class="d-flex mb-3">
-                                        <i class="bi bi-envelope-fill me-3 fs-5"></i>
-                                        <p class="mb-0">info@findingunicorn.com</p>
-                                    </div>
-                                    <div class="d-flex mb-3">
-                                        <i class="bi bi-telephone-fill me-3 fs-5"></i>
-                                        <p class="mb-0">(84) 123-456-789</p>
-                                    </div>
-                                    <div class="d-flex">
-                                        <i class="bi bi-clock-fill me-3 fs-5"></i>
-                                        <div>
-                                            <p class="mb-0">Thứ 2 - Thứ 6: 09:00 - 21:00</p>
-                                            <p class="mb-0">Thứ 7 - Chủ nhật: 09:00 - 18:00</p>
+
+                                    <!-- Footer -->
+                                    <footer>
+                                        <div class="footer-content">
+                                            <div class="container-fluid p-0">
+                                                <div class="container py-5">
+                                                    <div class="row g-4">
+                                                        <div class="col-lg-4 col-md-6">
+                                                            <h5 class="mb-4" style="color: var(--text-color);">Về Kingdoms Toys</h5>
+                                                            <div class="footer-about">
+                                                                <img src="${pageContext.request.contextPath}/resources/logo.png" 
+                                                                     alt="Kingdoms Toys" 
+                                                                     class="mb-3" 
+                                                                     style="max-height: 60px;">
+                                                                <p class="mb-4">Chúng tôi là đơn vị chuyên cung cấp các sản phẩm đồ chơi chất lượng cao, 
+                                                                    mang đến niềm vui và trải nghiệm tuyệt vời cho người sưu tầm.</p>
+                                                                <div class="social-links">
+                                                                    <a href="#" class="me-3 text-decoration-none">
+                                                                        <i class="bi bi-facebook fs-5"></i>
+                                                                    </a>
+                                                                    <a href="#" class="me-3 text-decoration-none">
+                                                                        <i class="bi bi-instagram fs-5"></i>
+                                                                    </a>
+                                                                    <a href="#" class="me-3 text-decoration-none">
+                                                                        <i class="bi bi-tiktok fs-5"></i>
+                                                                    </a>
+                                                                    <a href="#" class="text-decoration-none">
+                                                                        <i class="bi bi-youtube fs-5"></i>
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-lg-4 col-md-6">
+                                                            <h5 class="mb-4" style="color: var(--text-color);">Liên kết nhanh</h5>
+                                                            <div class="row">
+                                                                <div class="col-6">
+                                                                    <ul class="list-unstyled footer-links">
+                                                                        <li class="mb-2">
+                                                                            <a href="#" class="text-decoration-none text-secondary">
+                                                                                <i class="bi bi-chevron-right me-2"></i>Trang chủ
+                                                                            </a>
+                                                                        </li>
+                                                                        <li class="mb-2">
+                                                                            <a href="#" class="text-decoration-none text-secondary">
+                                                                                <i class="bi bi-chevron-right me-2"></i>Sản phẩm
+                                                                            </a>
+                                                                        </li>
+                                                                        <li class="mb-2">
+                                                                            <a href="#" class="text-decoration-none text-secondary">
+                                                                                <i class="bi bi-chevron-right me-2"></i>Về chúng tôi
+                                                                            </a>
+                                                                        </li>
+                                                                        <li class="mb-2">
+                                                                            <a href="#" class="text-decoration-none text-secondary">
+                                                                                <i class="bi bi-chevron-right me-2"></i>Liên hệ
+                                                                            </a>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                                <div class="col-6">
+                                                                    <ul class="list-unstyled footer-links">
+                                                                        <li class="mb-2">
+                                                                            <a href="#" class="text-decoration-none text-secondary">
+                                                                                <i class="bi bi-chevron-right me-2"></i>Chính sách
+                                                                            </a>
+                                                                        </li>
+                                                                        <li class="mb-2">
+                                                                            <a href="#" class="text-decoration-none text-secondary">
+                                                                                <i class="bi bi-chevron-right me-2"></i>Điều khoản
+                                                                            </a>
+                                                                        </li>
+                                                                        <li class="mb-2">
+                                                                            <a href="#" class="text-decoration-none text-secondary">
+                                                                                <i class="bi bi-chevron-right me-2"></i>FAQs
+                                                                            </a>
+                                                                        </li>
+                                                                        <li class="mb-2">
+                                                                            <a href="#" class="text-decoration-none text-secondary">
+                                                                                <i class="bi bi-chevron-right me-2"></i>Blog
+                                                                            </a>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-lg-4 col-md-6">
+                                                            <h5 class="mb-4" style="color: var(--text-color);">Thông tin liên hệ</h5>
+                                                            <div class="footer-contact">
+                                                                <div class="d-flex mb-3">
+                                                                    <i class="bi bi-geo-alt-fill me-3 fs-5"></i>
+                                                                    <p class="mb-0">123 Đường ABC, Quận XYZ, TP.HCM</p>
+                                                                </div>
+                                                                <div class="d-flex mb-3">
+                                                                    <i class="bi bi-envelope-fill me-3 fs-5"></i>
+                                                                    <p class="mb-0">info@findingunicorn.com</p>
+                                                                </div>
+                                                                <div class="d-flex mb-3">
+                                                                    <i class="bi bi-telephone-fill me-3 fs-5"></i>
+                                                                    <p class="mb-0">(84) 123-456-789</p>
+                                                                </div>
+                                                                <div class="d-flex">
+                                                                    <i class="bi bi-clock-fill me-3 fs-5"></i>
+                                                                    <div>
+                                                                        <p class="mb-0">Thứ 2 - Thứ 6: 09:00 - 21:00</p>
+                                                                        <p class="mb-0">Thứ 7 - Chủ nhật: 09:00 - 18:00</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Copyright -->
+                                        <div class="footer-copyright">
+                                            <div class="container-fluid p-0">
+                                                <div class="container">
+                                                    <div class="row py-3">
+                                                        <div class="col-md-6 text-center text-md-start">
+                                                            <p class="mb-0">&copy; 2025 Kingdoms Toys. All rights reserved.</p>
+                                                        </div>
+                                                        <div class="col-md-6 text-center text-md-end">
+                                                            <img src="${pageContext.request.contextPath}/resources/payment-methods.png" 
+                                                                 alt="Payment Methods" 
+                                                                 style="height: 30px;">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </footer>
+
+
+                                    <!-- Cart Offcanvas -->
+                                    <div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvas">
+                                        <div class="offcanvas-header">
+                                            <h5 class="offcanvas-title">Giỏ hàng</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+                                        </div>
+                                        <div class="offcanvas-body">
+                                            <div class="cart-items">
+                                                <!-- Cart items will be dynamically added here -->
+                                            </div>
+                                            <div class="cart-total mt-3">
+                                                <h6>Tổng cộng: <span class="total-amount">0đ</span></h6>
+                                            </div>
+                                            <button class="btn btn-primary w-100 mt-3">Thanh toán</button>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Copyright -->
-            <div class="footer-copyright">
-                <div class="container-fluid p-0">
-                    <div class="container">
-                        <div class="row py-3">
-                            <div class="col-md-6 text-center text-md-start">
-                                <p class="mb-0">&copy; 2025 Kingdoms Toys. All rights reserved.</p>
-                            </div>
-                            <div class="col-md-6 text-center text-md-end">
-                                <img src="${pageContext.request.contextPath}/resources/payment-methods.png" 
-                                     alt="Payment Methods" 
-                                     style="height: 30px;">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </footer>
+                                    <!-- Scripts -->
+                                    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+                                    <script>
+                                        let cart = [];
 
+                                        // Add to Cart Function
+                                        document.querySelectorAll('.add-to-cart').forEach(button => {
+                                            button.addEventListener('click', function () {
+                                                const productId = this.dataset.id;
+                                                const productCard = this.closest('.product-card');
+                                                const productName = productCard.querySelector('.product-title').textContent;
+                                                const productPrice = productCard.querySelector('.product-price').textContent;
+                                                const productImage = productCard.querySelector('.product-image img').src;
 
-        <!-- Cart Offcanvas -->
-        <div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvas">
-            <div class="offcanvas-header">
-                <h5 class="offcanvas-title">Giỏ hàng</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-            </div>
-            <div class="offcanvas-body">
-                <div class="cart-items">
-                    <!-- Cart items will be dynamically added here -->
-                </div>
-                <div class="cart-total mt-3">
-                    <h6>Tổng cộng: <span class="total-amount">0đ</span></h6>
-                </div>
-                <button class="btn btn-primary w-100 mt-3">Thanh toán</button>
-            </div>
-        </div>
+                                                addToCart({
+                                                    id: productId,
+                                                    name: productName,
+                                                    price: productPrice,
+                                                    image: productImage,
+                                                    quantity: 1
+                                                });
+                                            });
+                                        });
 
-        <!-- Scripts -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-        <script>
-            let cart = [];
+                                        function addToCart(product) {
+                                            const existingItem = cart.find(item => item.id === product.id);
 
-            // Add to Cart Function
-            document.querySelectorAll('.add-to-cart').forEach(button => {
-                button.addEventListener('click', function () {
-                    const productId = this.dataset.id;
-                    const productCard = this.closest('.product-card');
-                    const productName = productCard.querySelector('.product-title').textContent;
-                    const productPrice = productCard.querySelector('.product-price').textContent;
-                    const productImage = productCard.querySelector('.product-image img').src;
+                                            if (existingItem) {
+                                                existingItem.quantity++;
+                                            } else {
+                                                cart.push(product);
+                                            }
 
-                    addToCart({
-                        id: productId,
-                        name: productName,
-                        price: productPrice,
-                        image: productImage,
-                        quantity: 1
-                    });
-                });
-            });
+                                            updateCartDisplay();
+                                            updateCartBadge();
+                                        }
 
-            function addToCart(product) {
-                const existingItem = cart.find(item => item.id === product.id);
+                                        function updateCartDisplay() {
+                                            const cartItems = document.querySelector('.cart-items');
+                                            cartItems.innerHTML = '';
+                                            let total = 0;
 
-                if (existingItem) {
-                    existingItem.quantity++;
-                } else {
-                    cart.push(product);
-                }
+                                            cart.forEach(item => {
+                                                const itemTotal = parseFloat(item.price.replace('$', '')) * item.quantity;
+                                                total += itemTotal;
 
-                updateCartDisplay();
-                updateCartBadge();
-            }
+                                                cartItems.innerHTML += `
+                                                    <div class="cart-item mb-3">
+                                                        <img src="${item.image}" alt="${item.name}" class="me-3" style="width: 50px; height: 50px; object-fit: cover;">
+                                                        <div class="cart-item-details">
+                                                            <h6 class="mb-0">${item.name}</h6>
+                                                            <p class="mb-0">${item.price} x ${item.quantity}</p>
+                                                        </div>
+                                                    </div>
+                                                `;
+                                            });
 
-            function updateCartDisplay() {
-                const cartItems = document.querySelector('.cart-items');
-                cartItems.innerHTML = '';
-                let total = 0;
+                                            document.querySelector('.total-amount').textContent = `$${total.toFixed(2)}`;
+                                        }
 
-                cart.forEach(item => {
-                    const itemTotal = parseFloat(item.price.replace('$', '')) * item.quantity;
-                    total += itemTotal;
+                                        function updateCartBadge() {
+                                            const badge = document.querySelector('.cart-icon .badge');
+                                            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+                                            badge.textContent = totalItems;
+                                        }
 
-                    cartItems.innerHTML += `
-                        <div class="cart-item mb-3">
-                            <img src="${item.image}" alt="${item.name}" class="me-3" style="width: 50px; height: 50px; object-fit: cover;">
-                            <div class="cart-item-details">
-                                <h6 class="mb-0">${item.name}</h6>
-                                <p class="mb-0">${item.price} x ${item.quantity}</p>
-                            </div>
-                        </div>
-                    `;
-                });
-
-                document.querySelector('.total-amount').textContent = `$${total.toFixed(2)}`;
-            }
-
-            function updateCartBadge() {
-                const badge = document.querySelector('.cart-icon .badge');
-                const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-                badge.textContent = totalItems;
-            }
-
-            // Load More Functionality
-            document.querySelector('.load-more button').addEventListener('click', function () {
-                // Add your load more logic here
-                this.textContent = 'Không còn sản phẩm';
-                this.disabled = true;
-            });
-        </script>
-    </body>
-</html>
+                                        // Load More Functionality
+                                        document.querySelector('.load-more button').addEventListener('click', function () {
+                                            // Add your load more logic here
+                                            this.textContent = 'Không còn sản phẩm';
+                                            this.disabled = true;
+                                        });
+                                    </script>
+                                    </body>
+                                    </html>

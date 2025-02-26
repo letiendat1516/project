@@ -310,6 +310,31 @@
                 padding: 0 5px;
             }
 
+            /* CSS cho banner slider */
+            .banner-slider {
+                width: 100%;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .carousel-inner {
+                width: 100%;
+            }
+
+            .carousel-item {
+                width: 100%;
+                height: auto;
+            }
+
+            .carousel-item img {
+                width: 100%;
+                height: auto;
+                object-fit: cover;
+            }
+
+            /* Media queries cho các kích thước màn hình khác nhau */
+
+
             /* Hero Section */
             .hero-section {
                 background-color: #f8f9fa;
@@ -333,6 +358,35 @@
                     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
                     margin-top: 1rem;
                 }
+                @media (max-width: 768px) {
+                    .carousel-item {
+                        height: 300px; /* Điều chỉnh chiều cao cho màn hình mobile */
+                    }
+
+                    .carousel-item img {
+                        height: 100%;
+                    }
+                }
+
+                @media (min-width: 769px) and (max-width: 1024px) {
+                    .carousel-item {
+                        height: 400px; /* Điều chỉnh chiều cao cho màn hình tablet */
+                    }
+
+                    .carousel-item img {
+                        height: 100%;
+                    }
+                }
+
+                @media (min-width: 1025px) {
+                    .carousel-item {
+                        height: 500px; /* Điều chỉnh chiều cao cho màn hình desktop */
+                    }
+
+                    .carousel-item img {
+                        height: 100%;
+                    }
+                }
 
                 .search-form {
                     margin: 1rem 0;
@@ -350,7 +404,31 @@
                 .navbar-nav .auth-links .nav-link {
                     margin: 5px 0;
                 }
+                .stock {
+                    font-size: 0.9em;
+                    margin: 5px 0;
+                }
+
+                .in-stock {
+                    color: #2ecc71;
+                }
+
+                .low-stock {
+                    color: #f1c40f;
+                }
+
+                .out-stock {
+                    color: #e74c3c;
+                }
+
+                button.add-to-cart:disabled {
+                    background-color: #ccc;
+                    cursor: not-allowed;
+                }
+
+
             }
+
         </style>
     </head>
     <body>
@@ -370,9 +448,9 @@
                 <!-- Main Navigation Content -->
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <!-- Search Bar -->
-                    <form class="d-flex mx-auto search-form">
+                    <form action="search" method="post" class="d-flex mx-auto search-form">
                         <div class="input-group">
-                            <input class="form-control" type="search" placeholder="Tìm kiếm sản phẩm..." aria-label="Search">
+                            <input name="txt" class="form-control" type="text" placeholder="Tìm kiếm sản phẩm..." aria-label="Search">
                             <button class="btn btn-outline-danger" type="submit">
                                 <i class="bi bi-search"></i>
                             </button>
@@ -382,10 +460,10 @@
                     <!-- Center Navigation Links -->
                     <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link active" href="#">Trang chủ</a>
+                            <a class="nav-link" href="home">Trang chủ</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="product.jsp">Sản phẩm</a>
+                            <a class="nav-link" href="products">Sản phẩm</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Liên hệ</a>
@@ -497,6 +575,21 @@
                                             <p class="product-price">
                                                 <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="₫"/>
                                             </p>
+
+                                            <!-- Hiển thị trạng thái tồn kho -->
+                                            <c:choose>
+                                                <c:when test="${product.stockQuantity > 10}">
+                                                    <p class="stock in-stock">Còn hàng (${product.stockQuantity})</p>
+                                                </c:when>
+                                                <c:when test="${product.stockQuantity > 0 && product.stockQuantity <= 10}">
+                                                    <p class="stock low-stock">Sắp hết hàng (Còn ${product.stockQuantity})</p>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <p class="stock out-stock">Hết hàng</p>
+                                                </c:otherwise>
+                                            </c:choose>
+
+                                            <!-- Nút thêm vào giỏ -->
                                             <c:choose>
                                                 <c:when test="${product.stockQuantity > 0}">
                                                     <button class="btn btn-primary w-100 add-to-cart" 
@@ -543,30 +636,134 @@
             </div>
         </div>
 
-        <!-- Footer -->
         <footer>
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-4">
-                        <h5>Về Kingdoms Toys</h5>
-                        <p>Chúng tôi là đơn vị chuyên cung cấp các sản phẩm đồ chơi chất lượng cao.</p>
+            <div class="footer-content">
+                <div class="container-fluid p-0">
+                    <div class="container py-5">
+                        <div class="row g-4">
+                            <div class="col-lg-4 col-md-6">
+                                <h5 class="mb-4" style="color: var(--text-color);">Về Kingdoms Toys</h5>
+                                <div class="footer-about">
+                                    <img src="${pageContext.request.contextPath}/resources/logo.png" 
+                                         alt="Kingdoms Toys" 
+                                         class="mb-3" 
+                                         style="max-height: 60px;">
+                                    <p class="mb-4">Chúng tôi là đơn vị chuyên cung cấp các sản phẩm đồ chơi chất lượng cao, 
+                                        mang đến niềm vui và trải nghiệm tuyệt vời cho người sưu tầm.</p>
+                                    <div class="social-links">
+                                        <a href="#" class="me-3 text-decoration-none">
+                                            <i class="bi bi-facebook fs-5"></i>
+                                        </a>
+                                        <a href="#" class="me-3 text-decoration-none">
+                                            <i class="bi bi-instagram fs-5"></i>
+                                        </a>
+                                        <a href="#" class="me-3 text-decoration-none">
+                                            <i class="bi bi-tiktok fs-5"></i>
+                                        </a>
+                                        <a href="#" class="text-decoration-none">
+                                            <i class="bi bi-youtube fs-5"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-md-6">
+                                <h5 class="mb-4" style="color: var(--text-color);">Liên kết nhanh</h5>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <ul class="list-unstyled footer-links">
+                                            <li class="mb-2">
+                                                <a href="#" class="text-decoration-none text-secondary">
+                                                    <i class="bi bi-chevron-right me-2"></i>Trang chủ
+                                                </a>
+                                            </li>
+                                            <li class="mb-2">
+                                                <a href="#" class="text-decoration-none text-secondary">
+                                                    <i class="bi bi-chevron-right me-2"></i>Sản phẩm
+                                                </a>
+                                            </li>
+                                            <li class="mb-2">
+                                                <a href="#" class="text-decoration-none text-secondary">
+                                                    <i class="bi bi-chevron-right me-2"></i>Về chúng tôi
+                                                </a>
+                                            </li>
+                                            <li class="mb-2">
+                                                <a href="#" class="text-decoration-none text-secondary">
+                                                    <i class="bi bi-chevron-right me-2"></i>Liên hệ
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-6">
+                                        <ul class="list-unstyled footer-links">
+                                            <li class="mb-2">
+                                                <a href="#" class="text-decoration-none text-secondary">
+                                                    <i class="bi bi-chevron-right me-2"></i>Chính sách
+                                                </a>
+                                            </li>
+                                            <li class="mb-2">
+                                                <a href="#" class="text-decoration-none text-secondary">
+                                                    <i class="bi bi-chevron-right me-2"></i>Điều khoản
+                                                </a>
+                                            </li>
+                                            <li class="mb-2">
+                                                <a href="#" class="text-decoration-none text-secondary">
+                                                    <i class="bi bi-chevron-right me-2"></i>FAQs
+                                                </a>
+                                            </li>
+                                            <li class="mb-2">
+                                                <a href="#" class="text-decoration-none text-secondary">
+                                                    <i class="bi bi-chevron-right me-2"></i>Blog
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-md-6">
+                                <h5 class="mb-4" style="color: var(--text-color);">Thông tin liên hệ</h5>
+                                <div class="footer-contact">
+                                    <div class="d-flex mb-3">
+                                        <i class="bi bi-geo-alt-fill me-3 fs-5"></i>
+                                        <p class="mb-0">123 Đường ABC, Quận XYZ, TP.HCM</p>
+                                    </div>
+                                    <div class="d-flex mb-3">
+                                        <i class="bi bi-envelope-fill me-3 fs-5"></i>
+                                        <p class="mb-0">info@findingunicorn.com</p>
+                                    </div>
+                                    <div class="d-flex mb-3">
+                                        <i class="bi bi-telephone-fill me-3 fs-5"></i>
+                                        <p class="mb-0">(84) 123-456-789</p>
+                                    </div>
+                                    <div class="d-flex">
+                                        <i class="bi bi-clock-fill me-3 fs-5"></i>
+                                        <div>
+                                            <p class="mb-0">Thứ 2 - Thứ 6: 09:00 - 21:00</p>
+                                            <p class="mb-0">Thứ 7 - Chủ nhật: 09:00 - 18:00</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-4">
-                        <h5>Liên kết</h5>
-                        <ul class="list-unstyled">
-                            <li><a href="#">Trang chủ</a></li>
-                            <li><a href="#">Sản phẩm</a></li>
-                            <li><a href="#">Về chúng tôi</a></li>
-                            <li><a href="#">Liên hệ</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-md-4">
-                        <h5>Liên hệ</h5>
-                        <ul class="list-unstyled">
-                            <li>Email: info@findingunicorn.com</li>
-                            <li>Phone: (84) 123-456-789</li>
-                            <li>Địa chỉ: 123 Đường ABC, Quận XYZ</li>
-                        </ul>
+                </div>
+            </div>
+
+            <!-- Copyright -->
+            <div class="footer-copyright">
+                <div class="container-fluid p-0">
+                    <div class="container">
+                        <div class="row py-3">
+                            <div class="col-md-6 text-center text-md-start">
+                                <p class="mb-0">&copy; 2025 Kingdoms Toys. All rights reserved.</p>
+                            </div>
+                            <div class="col-md-6 text-center text-md-end">
+                                <img src="${pageContext.request.contextPath}/resources/payment-methods.png" 
+                                     alt="Payment Methods" 
+                                     style="height: 30px;">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
