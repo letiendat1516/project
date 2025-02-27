@@ -77,7 +77,7 @@ throws ServletException, IOException {
         // Nếu tìm kiếm từ trang chủ
         request.setAttribute("featuredProducts", searchResults);
         request.setAttribute("searchQuery", s);
-        request.getRequestDispatcher("index.jsp").forward(request, response);
+        request.getRequestDispatcher("product.jsp").forward(request, response);
     } else {
         // Nếu tìm kiếm từ trang product hoặc mặc định
         request.setAttribute("products", searchResults);

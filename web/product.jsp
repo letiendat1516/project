@@ -378,7 +378,7 @@
                             <a class="nav-link active" href="products">Sản phẩm</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Liên hệ</a>
+                            <a class="nav-link" href="contact.jsp">Liên hệ</a>
                         </li>
                     </ul>
 
