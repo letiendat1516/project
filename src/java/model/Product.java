@@ -17,6 +17,7 @@ public class Product {
     private boolean isFeatured;
     private int featuredOrder;
     private Date featuredUntil;
+    private int roleid;
     
     // Constructor mặc định
     public Product() {
@@ -24,7 +25,7 @@ public class Product {
     
     // Constructor đầy đủ hiện tại
     public Product(int productId, String name, String description, double price, 
-                  int stockQuantity, int categoryId, String imageUrl, Timestamp createdAt) {
+                  int stockQuantity, int categoryId, String imageUrl, Timestamp createdAt, int roleid) {
         this.productId = productId;
         this.name = name;
         this.description = description;
@@ -33,6 +34,15 @@ public class Product {
         this.categoryId = categoryId;
         this.imageUrl = imageUrl;
         this.createdAt = createdAt;
+        this.roleid = roleid;
+    }
+
+    public int getRoleid() {
+        return roleid;
+    }
+
+    public void setRoleid(int roleid) {
+        this.roleid = roleid;
     }
     
     // Constructor đầy đủ với các thuộc tính nổi bật

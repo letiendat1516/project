@@ -863,59 +863,58 @@
     </head>
     <body>
         <!-- Header/Navbar -->
-        <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
             <div class="container">
-                <a class="navbar-brand" href="index.jsp">
-                    <img src="assets/images/logo.png" alt="KINGDOMS TOYS Logo">
+                <a class="navbar-brand" href="javascript:void(0);" onclick="window.location.href = '${pageContext.request.contextPath}/home';">
+                    <img src="${pageContext.request.contextPath}/resources/logo.png" alt="Kingdoms Toys">
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
                 <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav me-auto">
+                    <!-- Search Bar -->
+                    <form action="search" method="post" class="d-flex mx-auto search-form">
+                        <input type="hidden" name="source" value="product">
+                        <div class="input-group">
+                            <input name="txt" class="form-control" type="text" placeholder="Tìm kiếm sản phẩm..." aria-label="Search">
+                            <button class="btn btn-outline-danger" type="submit">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </form>
+
+
+                    <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link" href="index.jsp">Trang chủ</a>
+                            <a class="nav-link" href="home">Trang chủ</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="shop.jsp">Sản phẩm</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="about.jsp">Giới thiệu</a>
+                            <a class="nav-link active" href="products">Sản phẩm</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="contact.jsp">Liên hệ</a>
                         </li>
                     </ul>
-                    <form class="search-form d-flex mx-auto">
-                        <div class="input-group">
-                            <input class="form-control" type="search" placeholder="Tìm kiếm sản phẩm..." aria-label="Search">
-                            <button class="btn" type="submit"><i class="bi bi-search"></i></button>
-                        </div>
-                    </form>
-                    <ul class="navbar-nav ms-auto auth-links">
-                        <li class="nav-item">
-                            <a class="nav-link" href="cart.jsp">
-                                <i class="bi bi-cart"></i> Giỏ hàng
-                                <c:if test="${not empty sessionScope.cart && sessionScope.cart.size() > 0}">
-                                    <span class="badge bg-danger">${sessionScope.cart.size()}</span>
-                                </c:if>
-                            </a>
-                        </li>
+
+                    <ul class="navbar-nav auth-links">
                         <c:choose>
                             <c:when test="${empty sessionScope.user}">
                                 <li class="nav-item">
                                     <a class="nav-link" href="login.jsp">Đăng nhập</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="register.jsp">Đăng ký</a>
+                                    <a class="nav-link" href="signup.jsp">Đăng ký</a>
                                 </li>
                             </c:when>
                             <c:otherwise>
                                 <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
                                         <i class="bi bi-person-circle"></i> ${sessionScope.user.fullName}
                                     </a>
-                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <ul class="dropdown-menu dropdown-menu-end">
                                         <li><a class="dropdown-item" href="profile.jsp">Tài khoản của tôi</a></li>
                                         <li><a class="dropdown-item" href="orders.jsp">Đơn hàng</a></li>
                                         <li><hr class="dropdown-divider"></li>
@@ -924,21 +923,44 @@
                                 </li>
                             </c:otherwise>
                         </c:choose>
+                        <li class="nav-item">
+                            <a class="nav-link position-relative cart-icon" href="#" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas">
+                                <i class="bi bi-cart3"></i>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                    0
+                                </span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
         </nav>
 
         <!-- Main Content -->
+        <!-- Main Content -->
+        <!-- Main Content -->
         <main class="container py-4">
+            <!-- Debug Info - Chỉ hiển thị trong quá trình phát triển -->
+            <c:if test="${param.debug == 'true'}">
+                <div style="background-color: #f8d7da; padding: 10px; margin: 10px 0; border-radius: 5px;">
+                    <h3>Debug Info:</h3>
+                    <p>Product object exists: ${not empty product}</p>
+                    <c:if test="${not empty product}">
+                        <p>Product ID: ${product.productId}</p>
+                        <p>Product Name: ${product.name}</p>
+                        <p>Product Price: ${product.price}</p>
+                        <p>Product Image URL: ${product.imageUrl}</p>
+                        <p>Product Description: ${product.description}</p>
+                        <p>Product Stock: ${product.stockQuantity}</p>
+                    </c:if>
+                </div>
+            </c:if>
+
             <!-- Breadcrumb -->
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="index.jsp">Trang chủ</a></li>
-                    <li class="breadcrumb-item"><a href="shop.jsp">Sản phẩm</a></li>
-                        <c:if test="${not empty product.category}">
-                        <li class="breadcrumb-item"><a href="shop.jsp?category=${product.category.id}">${product.category.name}</a></li>
-                        </c:if>
+                    <li class="breadcrumb-item"><a href="home">Trang chủ</a></li>
+                    <li class="breadcrumb-item"><a href="products">Sản phẩm</a></li>
                     <li class="breadcrumb-item active" aria-current="page">${product.name}</li>
                 </ol>
             </nav>
@@ -947,16 +969,9 @@
             <div class="row">
                 <div class="col-lg-6">
                     <div class="product-gallery">
-                        <img src="${product.mainImage}" alt="${product.name}" class="product-main-image" id="main-product-image">
+                        <img src="${product.imageUrl}" alt="${product.name}" class="product-main-image" id="main-product-image">
 
-                        <c:if test="${not empty product.images && product.images.size() > 0}">
-                            <div class="product-thumbnails">
-                                <img src="${product.mainImage}" alt="${product.name}" class="product-thumbnail active" onclick="changeImage(this.src)">
-                                <c:forEach items="${product.images}" var="image">
-                                    <img src="${image}" alt="${product.name}" class="product-thumbnail" onclick="changeImage(this.src)">
-                                </c:forEach>
-                            </div>
-                        </c:if>
+                        <%-- Phần thumbnail có thể được thêm sau khi bạn có nhiều hình ảnh cho sản phẩm --%>
                     </div>
                 </div>
 
@@ -964,45 +979,19 @@
                     <div class="product-info">
                         <h1 class="product-title">${product.name}</h1>
 
-                        <div class="product-rating">
-                            <div class="stars">
-                                <c:forEach begin="1" end="5" var="i">
-                                    <c:choose>
-                                        <c:when test="${i <= product.rating}">
-                                            <i class="bi bi-star-fill"></i>
-                                        </c:when>
-                                        <c:when test="${i <= product.rating + 0.5}">
-                                            <i class="bi bi-star-half"></i>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <i class="bi bi-star"></i>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </c:forEach>
-                            </div>
-                            <a href="#reviews" class="reviews">(${product.reviewCount} đánh giá)</a>
-                        </div>
-
                         <div class="product-price">
-                            <c:if test="${product.discountPrice > 0}">
-                                <span class="original-price"><fmt:formatNumber value="${product.price}" type="currency" currencySymbol="₫" maxFractionDigits="0"/></span>
-                                <fmt:formatNumber value="${product.discountPrice}" type="currency" currencySymbol="₫" maxFractionDigits="0"/>
-                                <span class="discount-badge">-<fmt:formatNumber value="${(product.price - product.discountPrice) / product.price * 100}" type="number" maxFractionDigits="0"/>%</span>
-                            </c:if>
-                            <c:if test="${product.discountPrice <= 0}">
-                                <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="₫" maxFractionDigits="0"/>
-                            </c:if>
+                            <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="₫" maxFractionDigits="0"/>
                         </div>
 
                         <c:choose>
-                            <c:when test="${product.stock > 10}">
+                            <c:when test="${product.stockQuantity > 10}">
                                 <div class="stock-status in-stock">
                                     <i class="bi bi-check-circle"></i> Còn hàng
                                 </div>
                             </c:when>
-                            <c:when test="${product.stock > 0}">
+                            <c:when test="${product.stockQuantity > 0}">
                                 <div class="stock-status low-stock">
-                                    <i class="bi bi-exclamation-circle"></i> Còn ${product.stock} sản phẩm
+                                    <i class="bi bi-exclamation-circle"></i> Còn ${product.stockQuantity} sản phẩm
                                 </div>
                             </c:when>
                             <c:otherwise>
@@ -1013,47 +1002,36 @@
                         </c:choose>
 
                         <div class="product-description">
-                            ${product.shortDescription}
+                            ${product.description}
                         </div>
 
                         <div class="product-meta">
-                            <p><span>Mã sản phẩm:</span> ${product.code}</p>
-                            <c:if test="${not empty product.category}">
-                                <p><span>Danh mục:</span> <a href="shop.jsp?category=${product.category.id}">${product.category.name}</a></p>
-                                </c:if>
-                                <c:if test="${not empty product.brand}">
-                                <p><span>Thương hiệu:</span> <a href="shop.jsp?brand=${product.brand.id}">${product.brand.name}</a></p>
-                                </c:if>
-                                <c:if test="${not empty product.tags && product.tags.size() > 0}">
-                                <p>
-                                    <span>Tags:</span> 
-                                    <c:forEach items="${product.tags}" var="tag" varStatus="loop">
-                                        <a href="shop.jsp?tag=${tag.id}">${tag.name}</a><c:if test="${!loop.last}">, </c:if>
-                                    </c:forEach>
-                                </p>
-                            </c:if>
+                            <p><span>Mã sản phẩm:</span> SP${product.productId}</p>
+                            <p><span>Danh mục:</span> 
+                                <a href="products?role=${product.roleid}">
+                                    <c:choose>
+                                        <c:when test="${product.roleid == 1}">Mô hình</c:when>
+                                        <c:when test="${product.roleid == 2}">Túi mù</c:when>
+                                        <c:when test="${product.roleid == 3}">Lego</c:when>
+                                        <c:otherwise>Đồ chơi</c:otherwise>
+                                    </c:choose>
+                                </a>
+                            </p>
                         </div>
 
-                        <c:if test="${product.stock > 0}">
+                        <c:if test="${product.stockQuantity > 0}">
                             <div class="quantity-selector">
                                 <span>Số lượng:</span>
-                                <button class="btn" onclick="decreaseQuantity()"><i class="bi bi-dash"></i></button>
-                                <input type="number" id="quantity" value="1" min="1" max="${product.stock}">
-                                <button class="btn" onclick="increaseQuantity()"><i class="bi bi-plus"></i></button>
+                                <input type="number" id="quantity" value="1" min="1" max="${product.stockQuantity}">
                             </div>
 
                             <div class="product-actions">
-                                <button class="btn btn-primary" onclick="addToCart(${product.id})">
+                                <button class="btn btn-primary add-to-cart-btn" data-product-id="${product.productId}">
                                     <i class="bi bi-cart-plus"></i> Thêm vào giỏ hàng
-                                </button>
-                                <button class="btn btn-outline-secondary" onclick="addToWishlist(${product.id})">
-                                    <i class="bi bi-heart"></i>
-                                </button>
-                                <button class="btn btn-outline-secondary" onclick="compareProduct(${product.id})">
-                                    <i class="bi bi-arrow-left-right"></i>
                                 </button>
                             </div>
                         </c:if>
+
 
                         <div class="product-share">
                             <span>Chia sẻ:</span>
@@ -1075,9 +1053,6 @@
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="specifications-tab" data-bs-toggle="tab" data-bs-target="#specifications" type="button" role="tab" aria-controls="specifications" aria-selected="false">Thông số kỹ thuật</button>
                     </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab" aria-controls="reviews" aria-selected="false">Đánh giá (${product.reviewCount})</button>
-                    </li>
                 </ul>
                 <div class="tab-content" id="productTabsContent">
                     <div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="description-tab">
@@ -1087,78 +1062,30 @@
                     <div class="tab-pane fade" id="specifications" role="tabpanel" aria-labelledby="specifications-tab">
                         <h4>Thông số kỹ thuật</h4>
                         <table class="specifications-table">
-                            <c:forEach items="${product.specifications}" var="spec">
-                                <tr>
-                                    <td>${spec.name}</td>
-                                    <td>${spec.value}</td>
-                                </tr>
-                            </c:forEach>
+                            <tr>
+                                <td>Mã sản phẩm</td>
+                                <td>SP${product.productId}</td>
+                            </tr>
+                            <tr>
+                                <td>Tên sản phẩm</td>
+                                <td>${product.name}</td>
+                            </tr>
+                            <tr>
+                                <td>Số lượng</td>
+                                <td>${product.stockQuantity}</td>
+                            </tr>
+                            <tr>
+                                <td>Danh mục</td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${product.roleid == 1}">Mô hình</c:when>
+                                        <c:when test="${product.roleid == 2}">Túi mù</c:when>
+                                        <c:when test="${product.roleid == 3}">Lego</c:when>
+                                        <c:otherwise>Đồ chơi</c:otherwise>
+                                    </c:choose>
+                                </td>
+                            </tr>
                         </table>
-                    </div>
-                    <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
-                        <h4>Đánh giá từ khách hàng</h4>
-
-                        <c:if test="${empty product.reviews || product.reviews.size() == 0}">
-                            <p>Chưa có đánh giá nào cho sản phẩm này.</p>
-                        </c:if>
-
-                        <c:forEach items="${product.reviews}" var="review">
-                            <div class="review-item">
-                                <div class="review-header">
-                                    <span class="reviewer-name">${review.user.fullName}</span>
-                                    <span class="review-date"><fmt:formatDate value="${review.createdAt}" pattern="dd/MM/yyyy" /></span>
-                                </div>
-                                <div class="review-rating">
-                                    <c:forEach begin="1" end="5" var="i">
-                                        <c:choose>
-                                            <c:when test="${i <= review.rating}">
-                                                <i class="bi bi-star-fill"></i>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <i class="bi bi-star"></i>
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </c:forEach>
-                                </div>
-                                <div class="review-content">
-                                    ${review.content}
-                                </div>
-                            </div>
-                        </c:forEach>
-
-                        <c:if test="${not empty sessionScope.user}">
-                            <div class="review-form">
-                                <h5>Viết đánh giá của bạn</h5>
-                                <form action="add-review" method="post">
-                                    <input type="hidden" name="productId" value="${product.id}">
-
-                                    <div class="mb-3">
-                                        <label for="rating" class="form-label">Đánh giá của bạn</label>
-                                        <div class="rating-select">
-                                            <div class="stars">
-                                                <c:forEach begin="1" end="5" var="i">
-                                                    <input type="radio" id="star${i}" name="rating" value="${i}" required>
-                                                    <label for="star${i}"><i class="bi bi-star-fill"></i></label>
-                                                    </c:forEach>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="reviewContent" class="form-label">Nội dung đánh giá</label>
-                                        <textarea class="form-control" id="reviewContent" name="content" rows="5" required></textarea>
-                                    </div>
-
-                                    <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
-                                </form>
-                            </div>
-                        </c:if>
-
-                        <c:if test="${empty sessionScope.user}">
-                            <div class="alert alert-info mt-4">
-                                Vui lòng <a href="login.jsp">đăng nhập</a> để viết đánh giá.
-                            </div>
-                        </c:if>
                     </div>
                 </div>
             </div>
@@ -1171,39 +1098,15 @@
                         <div class="col-md-3 col-sm-6">
                             <div class="product-card">
                                 <div class="product-card-img">
-                                    <img src="${relatedProduct.mainImage}" alt="${relatedProduct.name}">
+                                    <img src="${relatedProduct.imageUrl}" alt="${relatedProduct.name}">
                                     <div class="product-card-overlay">
-                                        <a href="#" class="btn" onclick="quickView(${relatedProduct.id})"><i class="bi bi-eye"></i></a>
-                                        <a href="#" class="btn" onclick="addToCart(${relatedProduct.id})"><i class="bi bi-cart-plus"></i></a>
-                                        <a href="#" class="btn" onclick="addToWishlist(${relatedProduct.id})"><i class="bi bi-heart"></i></a>
+                                        <a href="product-detail?id=${relatedProduct.productId}" class="btn"><i class="bi bi-eye"></i></a>
                                     </div>
                                 </div>
                                 <div class="product-card-body">
-                                    <a href="product-detail.jsp?id=${relatedProduct.id}" class="product-card-title">${relatedProduct.name}</a>
+                                    <a href="product-detail?id=${relatedProduct.productId}" class="product-card-title">${relatedProduct.name}</a>
                                     <div class="product-card-price">
-                                        <c:if test="${relatedProduct.discountPrice > 0}">
-                                            <span class="original-price"><fmt:formatNumber value="${relatedProduct.price}" type="currency" currencySymbol="₫" maxFractionDigits="0"/></span>
-                                            <fmt:formatNumber value="${relatedProduct.discountPrice}" type="currency" currencySymbol="₫" maxFractionDigits="0"/>
-                                        </c:if>
-                                        <c:if test="${relatedProduct.discountPrice <= 0}">
-                                            <fmt:formatNumber value="${relatedProduct.price}" type="currency" currencySymbol="₫" maxFractionDigits="0"/>
-                                        </c:if>
-                                    </div>
-                                    <div class="product-card-rating">
-                                        <c:forEach begin="1" end="5" var="i">
-                                            <c:choose>
-                                                <c:when test="${i <= relatedProduct.rating}">
-                                                    <i class="bi bi-star-fill"></i>
-                                                </c:when>
-                                                <c:when test="${i <= relatedProduct.rating + 0.5}">
-                                                    <i class="bi bi-star-half"></i>
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <i class="bi bi-star"></i>
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </c:forEach>
-                                        <span>(${relatedProduct.reviewCount})</span>
+                                        <fmt:formatNumber value="${relatedProduct.price}" type="currency" currencySymbol="₫" maxFractionDigits="0"/>
                                     </div>
                                 </div>
                             </div>
@@ -1212,6 +1115,10 @@
                 </div>
             </section>
         </main>
+
+        <!-- Footer giữ nguyên -->
+
+        <!-- Quick View Modal giữ nguyên -->
 
         <!-- Footer -->
         <footer>
@@ -1299,184 +1206,118 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
         <script>
-                                            // Change main product image
-                                            function changeImage(src) {
-                                                document.getElementById('main-product-image').src = src;
+                    // Change main product image
+                    function changeImage(src) {
+                    document.getElementById('main-product-image').src = src;
+                    // Update active thumbnail
+                    const thumbnails = document.querySelectorAll('.product-thumbnail');
+                    thumbnails.forEach(thumbnail => {
+                    thumbnail.classList.remove('active');
+                    if (thumbnail.src === src) {
+                    thumbnail.classList.add('active');
+                    }
+                    });
+                    }
 
-                                                // Update active thumbnail
-                                                const thumbnails = document.querySelectorAll('.product-thumbnail');
-                                                thumbnails.forEach(thumbnail => {
-                                                    thumbnail.classList.remove('active');
-                                                    if (thumbnail.src === src) {
-                                                        thumbnail.classList.add('active');
-                                                    }
-                                                });
-                                            }
+                    // Đảm bảo code chạy sau khi trang đã tải xong
+                    document.addEventListener('DOMContentLoaded', function() {
+                    // Lấy các phần tử
+                    const decreaseBtn = document.querySelector('.decrease-btn');
+                    const increaseBtn = document.querySelector('.increase-btn');
+                    const quantityInput = document.getElementById('quantity');
+                    const addToCartBtn = document.querySelector('.add-to-cart-btn');
+                    // Xử lý sự kiện giảm số lượng
+                    if (decreaseBtn) {
+                    decreaseBtn.addEventListener('click', function() {
+                    let quantity = parseInt(quantityInput.value);
+                    if (quantity > 1) {
+                    quantityInput.value = quantity - 1;
+                    }
+                    });
+                    }
+                    const increaseBtn = document.querySelector('.btn .bi-plus').parentNode;
+                    const decreaseBtn = document.querySelector('.btn .bi-dash').parentNode;
+                    // Xử lý sự kiện tăng số lượng
+                    if (increaseBtn) {
+                    increaseBtn.addEventListener('click', function() {
+                    let quantity = parseInt(quantityInput.value);
+                    let maxStock = parseInt(quantityInput.getAttribute('max'));
+                    if (quantity < maxStock) {
+                    quantityInput.value = parseInt(quantity) + 1;
+                    }
+                    });
+                    }
 
-                                            // Quantity selector
-                                            function decreaseQuantity() {
-                                                const quantityInput = document.getElementById('quantity');
-                                                let quantity = parseInt(quantityInput.value);
-                                                if (quantity > 1) {
-                                                    quantityInput.value = quantity - 1;
-                                                }
-                                            }
+                    // Xử lý sự kiện thêm vào giỏ hàng
+                    if (addToCartBtn) {
+                    addToCartBtn.addEventListener('click', function() {
+                    const productId = this.getAttribute('data-product-id');
+                    const quantity = document.getElementById('quantity').value;
+                    fetch('add-to-cart', {
+                    method: 'POST',
+                            headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                            body: `productId=${productId}&quantity=${quantity}`
+                    })
+                            .then(response => {
+                            if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                            })
+                            .then(data => {
+                            if (data.success) {
+                            alert('Sản phẩm đã được thêm vào giỏ hàng!');
+                            // Cập nhật số lượng trong giỏ hàng nếu có
+                            const cartBadge = document.querySelector('.cart-icon .badge');
+                            if (cartBadge) {
+                            cartBadge.textContent = data.cartSize;
+                            }
+                            } else {
+                            alert(data.message || 'Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng!');
+                            }
+                            })
+                            .catch(error => {
+                            console.error('Error:', error);
+                            alert('Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng!');
+                            });
+                    });
+                    }
 
-                                            function increaseQuantity() {
-                                                const quantityInput = document.getElementById('quantity');
-                                                let quantity = parseInt(quantityInput.value);
-                                                const maxStock = parseInt(quantityInput.getAttribute('max'));
-                                                if (quantity < maxStock) {
-                                                    quantityInput.value = quantity + 1;
-                                                }
-                                            }
-
-                                            // Add to cart
-                                            function addToCart(productId) {
-                                                const quantity = document.getElementById('quantity') ? document.getElementById('quantity').value : 1;
-
-                                                fetch('add-to-cart', {
-                                                    method: 'POST',
-                                                    headers: {
-                                                        'Content-Type': 'application/x-www-form-urlencoded',
-                                                    },
-                                                    body: `productId=${productId}&quantity=${quantity}`
-                                                })
-                                                        .then(response => response.json())
-                                                        .then(data => {
-                                                            if (data.success) {
-                                                                // Show success message
-                                                                alert('Sản phẩm đã được thêm vào giỏ hàng!');
-
-                                                                // Update cart count in navbar
-                                                                const cartBadge = document.querySelector('.nav-link .badge');
-                                                                if (cartBadge) {
-                                                                    cartBadge.textContent = data.cartSize;
-                                                                } else {
-                                                                    const cartLink = document.querySelector('.nav-link[href="cart.jsp"]');
-                                                                    const badge = document.createElement('span');
-                                                                    badge.className = 'badge bg-danger';
-                                                                    badge.textContent = data.cartSize;
-                                                                    cartLink.appendChild(badge);
-                                                                }
-                                                            } else {
-                                                                alert(data.message || 'Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng!');
-                                                            }
-                                                        })
-                                                        .catch(error => {
-                                                            console.error('Error:', error);
-                                                            alert('Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng!');
-                                                        });
-                                            }
-
-                                            // Add to wishlist
-                                            function addToWishlist(productId) {
-                                                fetch('add-to-wishlist', {
-                                                    method: 'POST',
-                                                    headers: {
-                                                        'Content-Type': 'application/x-www-form-urlencoded',
-                                                    },
-                                                    body: `productId=${productId}`
-                                                })
-                                                        .then(response => response.json())
-                                                        .then(data => {
-                                                            if (data.success) {
-                                                                alert('Sản phẩm đã được thêm vào danh sách yêu thích!');
-                                                            } else {
-                                                                if (data.message === 'not_logged_in') {
-                                                                    alert('Vui lòng đăng nhập để thêm sản phẩm vào danh sách yêu thích!');
-                                                                    window.location.href = 'login.jsp';
-                                                                } else {
-                                                                    alert(data.message || 'Có lỗi xảy ra khi thêm sản phẩm vào danh sách yêu thích!');
-                                                                }
-                                                            }
-                                                        })
-                                                        .catch(error => {
-                                                            console.error('Error:', error);
-                                                            alert('Có lỗi xảy ra khi thêm sản phẩm vào danh sách yêu thích!');
-                                                        });
-                                            }
-
-                                            // Compare product
-                                            function compareProduct(productId) {
-                                                fetch('add-to-compare', {
-                                                    method: 'POST',
-                                                    headers: {
-                                                        'Content-Type': 'application/x-www-form-urlencoded',
-                                                    },
-                                                    body: `productId=${productId}`
-                                                })
-                                                        .then(response => response.json())
-                                                        .then(data => {
-                                                            if (data.success) {
-                                                                alert('Sản phẩm đã được thêm vào danh sách so sánh!');
-                                                                if (data.redirect) {
-                                                                    window.location.href = data.redirect;
-                                                                }
-                                                            } else {
-                                                                alert(data.message || 'Có lỗi xảy ra khi thêm sản phẩm vào danh sách so sánh!');
-                                                            }
-                                                        })
-                                                        .catch(error => {
-                                                            console.error('Error:', error);
-                                                            alert('Có lỗi xảy ra khi thêm sản phẩm vào danh sách so sánh!');
-                                                        });
-                                            }
-
-                                            // Quick view product
-                                            function quickView(productId) {
-                                                fetch(`quick-view?id=${productId}`)
-                                                        .then(response => response.text())
-                                                        .then(html => {
-                                                            document.getElementById('quickViewContent').innerHTML = html;
-                                                            new bootstrap.Modal(document.getElementById('quickViewModal')).show();
-                                                        })
-                                                        .catch(error => {
-                                                            console.error('Error:', error);
-                                                            alert('Có lỗi xảy ra khi tải thông tin sản phẩm!');
-                                                        });
-                                            }
-
-                                            // Initialize rating stars in review form
-                                            document.addEventListener('DOMContentLoaded', function () {
-                                                const ratingInputs = document.querySelectorAll('.rating-select input');
-                                                const ratingLabels = document.querySelectorAll('.rating-select label');
-
-                                                ratingLabels.forEach((label, index) => {
-                                                    label.addEventListener('mouseover', () => {
-                                                        for (let i = 0; i <= index; i++) {
-                                                            ratingLabels[i].querySelector('i').classList.remove('bi-star');
-                                                            ratingLabels[i].querySelector('i').classList.add('bi-star-fill');
-                                                        }
-                                                        for (let i = index + 1; i < ratingLabels.length; i++) {
-                                                            ratingLabels[i].querySelector('i').classList.remove('bi-star-fill');
-                                                            ratingLabels[i].querySelector('i').classList.add('bi-star');
-                                                        }
-                                                    });
-
-                                                    label.addEventListener('click', () => {
-                                                        ratingInputs[index].checked = true;
-                                                    });
-                                                });
-
-                                                const ratingSelect = document.querySelector('.rating-select');
-                                                if (ratingSelect) {
-                                                    ratingSelect.addEventListener('mouseout', () => {
-                                                        ratingLabels.forEach((label, index) => {
-                                                            if (!ratingInputs[index].checked) {
-                                                                label.querySelector('i').classList.remove('bi-star-fill');
-                                                                label.querySelector('i').classList.add('bi-star');
-                                                            } else {
-                                                                for (let i = 0; i <= index; i++) {
-                                                                    ratingLabels[i].querySelector('i').classList.remove('bi-star');
-                                                                    ratingLabels[i].querySelector('i').classList.add('bi-star-fill');
-                                                                }
-                                                                break;
-                                                            }
-                                                        });
-                                                    });
-                                                }
-                                            });
+                    // Kiểm tra giá trị nhập vào
+                    if (quantityInput) {
+                    quantityInput.addEventListener('change', function() {
+                    let value = parseInt(this.value);
+                    const min = parseInt(this.getAttribute('min') || 1);
+                    const max = parseInt(this.getAttribute('max'));
+                    if (isNaN(value) || value < min) {
+                    this.value = min;
+                    } else if (value > max) {
+                    this.value = max;
+                    }
+                    });
+                    }
+                    });
+                    }
+                    const ratingSelect = document.querySelector('.rating-select');
+                    if (ratingSelect) {
+                    ratingSelect.addEventListener('mouseout', () => {
+                    ratingLabels.forEach((label, index) => {
+                    if (!ratingInputs[index].checked) {
+                    label.querySelector('i').classList.remove('bi-star-fill');
+                    label.querySelector('i').classList.add('bi-star');
+                    } else {
+                    for (let i = 0; i <= index; i++) {
+                    ratingLabels[i].querySelector('i').classList.remove('bi-star');
+                    ratingLabels[i].querySelector('i').classList.add('bi-star-fill');
+                    }
+                    break;
+                    }
+                    });
+                    });
+                    }
+                    });
         </script>
     </body>
 </html>

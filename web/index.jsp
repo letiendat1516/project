@@ -555,6 +555,7 @@
         </section>
 
         <!-- Products Section -->
+        <!-- Products Section -->
         <section class="products-section py-5">
             <div class="container">
                 <h2 class="text-center mb-5">Sản phẩm nổi bật</h2>
@@ -565,15 +566,25 @@
                                 <div class="col-md-4 mb-4">
                                     <div class="product-card">
                                         <div class="product-image">
-                                            <c:choose>
-                                                <c:when test="${not empty product.imageUrl}">
-                                                    <img src="${pageContext.request.contextPath}/${product.imageUrl}" 
-                                                         alt="${product.name}">
-                                                </c:when>
-                                            </c:choose>
+                                            <a href="${pageContext.request.contextPath}/product-detail?id=${product.productId}">
+                                                <c:choose>
+                                                    <c:when test="${not empty product.imageUrl}">
+                                                        <img src="${pageContext.request.contextPath}/${product.imageUrl}" 
+                                                             alt="${product.name}">
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <img src="${pageContext.request.contextPath}/resources/images/no-image.jpg" 
+                                                             alt="No image available">
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </a>
                                         </div>
                                         <div class="product-info">
-                                            <h3 class="product-title">${product.name}</h3>
+                                            <h3 class="product-title">
+                                                <a href="${pageContext.request.contextPath}/product-detail?id=${product.productId}" class="text-decoration-none">
+                                                    ${product.name}
+                                                </a>
+                                            </h3>
                                             <p class="product-price">
                                                 <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="₫"/>
                                             </p>
@@ -619,6 +630,7 @@
                 </div>
             </div>
         </section>
+
 
 
         <!-- Cart Offcanvas -->

@@ -127,10 +127,10 @@
 
                             <!-- Links -->
                             <div class="text-center">
-                                <a href="${pageContext.request.contextPath}/forgot-password" 
+                                <a href="${pageContext.request.contextPath}/forgot-password.jsp" 
                                    class="text-decoration-none">Quên mật khẩu?</a>
                                 <span class="mx-2">|</span>
-                                <a href="${pageContext.request.contextPath}/signup" 
+                                <a href="${pageContext.request.contextPath}/signup.jsp" 
                                    class="text-decoration-none">Đăng ký tài khoản mới</a>
                             </div>
                         </form>

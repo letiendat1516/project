@@ -8,4 +8,7 @@
         <servlet-name>Search</servlet-name>
         <url-pattern>/search</url-pattern>
     </servlet-mapping>
+    <welcome-file-list>
+        <welcome-file>home</welcome-file>
+    </welcome-file-list>
 </web-app>

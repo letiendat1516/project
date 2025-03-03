@@ -34,17 +34,18 @@ public class UserDAO {
     }
 
     public int register(User user) throws Exception {
-        try (Connection conn = db.getConnection();
-             CallableStatement stmt = conn.prepareCall("{CALL sp_RegisterUser(?, ?, ?, ?, ?, ?)}")) {
-            
+        try (Connection conn = db.getConnection(); CallableStatement stmt = conn.prepareCall("{CALL sp_RegisterUser(?, ?, ?, ?)}")) {
+
             stmt.setString(1, user.getFullName());
             stmt.setString(2, user.getEmail());
             stmt.setString(3, user.getPhone());
-            stmt.setString(4, PasswordHash.hashPassword(user.getPassword())); // Mã hóa mật khẩu
-            stmt.setInt(6, 3); // Mặc định role_id = 3 (Customer)
-
+            stmt.setString(4, user.getPassword());
             ResultSet rs = stmt.executeQuery();
-            return rs.next() ? rs.getInt("userId") : -1;
+
+            if (rs.next()) {
+                return rs.getInt("userId");
+            }
+            return -1;
         }
     }
 
@@ -73,33 +74,6 @@ public class UserDAO {
             return null;
         }
     }
-
-    public List<Product> GetAllPproduct() {
-        List<Product> list = new ArrayList<>();
-        String query = "SELECT TOP 3 * FROM products ORDER BY product_id DESC";
-        
-        try (Connection conn = db.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
-            
-            while (rs.next()) {
-                list.add(new Product(
-                    rs.getInt("product_id"),
-                    rs.getString("name"),
-                    rs.getString("description"),
-                    rs.getDouble("price"),
-                    rs.getInt("stock_quantity"),
-                    rs.getInt("category_id"),
-                    rs.getString("image_url"),
-                    rs.getTimestamp("created_at")
-                ));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return list;
-    }
-
     // Thêm phương thức để lấy role name từ role_id
     public String getRoleName(int roleId) throws Exception {
         String sql = "SELECT role_name FROM Roles WHERE role_id = ?";

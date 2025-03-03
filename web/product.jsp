@@ -202,6 +202,40 @@
                 margin-bottom: 15px;
             }
 
+            /* CSS cho liên kết sản phẩm */
+            .product-link {
+                text-decoration: none;
+                color: inherit;
+                display: block;
+                cursor: pointer;
+            }
+
+            .product-title-link {
+                text-decoration: none;
+                color: var(--text-color);
+                display: block;
+            }
+
+            .product-title-link:hover .product-title {
+                color: var(--primary-color);
+            }
+
+            .product-card {
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+                cursor: pointer;
+            }
+
+            .product-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            }
+
+            /* Đảm bảo nút "Thêm vào giỏ" vẫn hoạt động độc lập */
+            .add-to-cart {
+                position: relative;
+                z-index: 2;
+            }
+
             .load-more {
                 text-align: center;
                 margin: 40px 0;
@@ -437,19 +471,31 @@
                         </button>
 
                         <div class="dropdown">
-                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                Loại sản phẩm
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="products">Tất Cả</a></li>
-                                    <c:forEach items="${categories}" var="category">
-                                    <li><a class="dropdown-item ${categoryId == category.categoryId ? 'active' : ''}" 
-                                           href="products?category=${category.categoryId}${not empty sortBy ? '&sort='.concat(sortBy) : ''}">
-                                            ${category.name}
-                                        </a></li>
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    Loại sản phẩm
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item ${empty roleId ? 'active' : ''}" 
+                                           href="products${not empty sortBy ? '?sort='.concat(sortBy) : ''}">
+                                            Tất Cả
+                                        </a>
+                                    </li>
+                                    <c:forEach var="role" items="${roles}">
+                                        <li>
+                                            <a class="dropdown-item ${roleId == role.key ? 'active' : ''}" 
+                                               href="products?role=${role.key}${not empty sortBy ? '&sort='.concat(sortBy) : ''}">
+                                                ${role.value}
+                                            </a>
+                                        </li>
                                     </c:forEach>
-                            </ul>
+                                </ul>
+                            </div>
+
                         </div>
+
+
                     </div>
                 </div>
                 <div class="d-flex justify-content-end mb-4">
@@ -467,46 +513,50 @@
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li><a class="dropdown-item ${empty sortBy ? 'active' : ''}" 
-                                       href="products${not empty categoryId ? '?category='.concat(categoryId) : ''}">
+                                       href="products${not empty roleId ? '?role='.concat(roleId) : ''}">
                                         Đề Xuất
                                     </a></li>
                                 <li><a class="dropdown-item ${sortBy == 'price_asc' ? 'active' : ''}" 
-                                       href="products?sort=price_asc${not empty categoryId ? '&category='.concat(categoryId) : ''}">
+                                       href="products?sort=price_asc${not empty roleId ? '&role='.concat(roleId) : ''}">
                                         Giá: Thấp Tới Cao
                                     </a></li>
                                 <li><a class="dropdown-item ${sortBy == 'price_desc' ? 'active' : ''}" 
-                                       href="products?sort=price_desc${not empty categoryId ? '&category='.concat(categoryId) : ''}">
+                                       href="products?sort=price_desc${not empty roleId ? '&role='.concat(roleId) : ''}">
                                         Giá: Cao Tới Thấp
                                     </a></li>
                                 <li><a class="dropdown-item ${sortBy == 'name_asc' ? 'active' : ''}" 
-                                       href="products?sort=name_asc${not empty categoryId ? '&category='.concat(categoryId) : ''}">
+                                       href="products?sort=name_asc${not empty roleId ? '&role='.concat(roleId) : ''}">
                                         Bảng chữ cái A-Z
                                     </a></li>
                                 <li><a class="dropdown-item ${sortBy == 'newest' ? 'active' : ''}" 
-                                       href="products?sort=newest${not empty categoryId ? '&category='.concat(categoryId) : ''}">
+                                       href="products?sort=newest${not empty roleId ? '&role='.concat(roleId) : ''}">
                                         Mới nhất
                                     </a></li>
                             </ul>
                         </div>
+
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
 
 
 
-        <!-- Products Grid -->
-        <div class="container mt-5">
-            <!-- Hiển thị tất cả sản phẩm -->
-            <div class="col-12">
-                <h3 class="mb-3">Tất cả sản phẩm</h3>
-                <div class="row">
-                    <c:choose>
-                        <c:when test="${not empty products}">
-                            <c:forEach items="${products}" var="product">
-                                <div class="col-md-3 mb-4">
-                                    <div class="product-card">
+    <!-- Products Grid -->
+    <div class="container mt-5">
+        <!-- Hiển thị tất cả sản phẩm -->
+        <div class="col-12">
+            <h3 class="mb-3">Tất cả sản phẩm</h3>
+            <div class="row">
+                <c:choose>
+                    <c:when test="${not empty products}">
+                        <c:forEach items="${products}" var="product">
+                            <div class="col-md-3 mb-4">
+                                <div class="product-card">
+                                    <!-- Thêm thẻ a để bao quanh hình ảnh sản phẩm -->
+                                    <a href="product-detail?id=${product.productId}" class="product-link">
                                         <div class="product-image">
                                             <c:choose>
                                                 <c:when test="${not empty product.imageUrl}">
@@ -519,113 +569,117 @@
                                                 </c:otherwise>
                                             </c:choose>
                                         </div>
-                                        <div class="product-info">
+                                    </a>
+                                    <div class="product-info">
+                                        <!-- Thêm thẻ a cho tên sản phẩm -->
+                                        <a href="product-detail?id=${product.productId}" class="product-title-link">
                                             <h3 class="product-title">${product.name}</h3>
-                                            <p class="product-price">
-                                                <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="₫"/>
-                                            </p>
+                                        </a>
+                                        <p class="product-price">
+                                            <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="₫"/>
+                                        </p>
 
-                                            <!-- Hiển thị trạng thái tồn kho -->
-                                            <c:choose>
-                                                <c:when test="${product.stockQuantity > 10}">
-                                                    <p class="stock in-stock">Còn hàng (${product.stockQuantity})</p>
-                                                </c:when>
-                                                <c:when test="${product.stockQuantity > 0 && product.stockQuantity <= 10}">
-                                                    <p class="stock low-stock">Sắp hết hàng (Còn ${product.stockQuantity})</p>
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <p class="stock out-stock">Hết hàng</p>
-                                                </c:otherwise>
-                                            </c:choose>
+                                        <!-- Hiển thị trạng thái tồn kho -->
+                                        <c:choose>
+                                            <c:when test="${product.stockQuantity > 10}">
+                                                <p class="stock in-stock">Còn hàng (${product.stockQuantity})</p>
+                                            </c:when>
+                                            <c:when test="${product.stockQuantity > 0 && product.stockQuantity <= 10}">
+                                                <p class="stock low-stock">Sắp hết hàng (Còn ${product.stockQuantity})</p>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <p class="stock out-stock">Hết hàng</p>
+                                            </c:otherwise>
+                                        </c:choose>
 
-                                            <!-- Nút thêm vào giỏ -->
-                                            <c:choose>
-                                                <c:when test="${product.stockQuantity > 0}">
-                                                    <button class="btn btn-primary w-100 add-to-cart" 
-                                                            data-id="${product.productId}">
-                                                        <i class="bi bi-cart-plus"></i> Thêm vào giỏ
-                                                    </button>
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <button class="btn btn-secondary w-100" disabled>
-                                                        Hết hàng
-                                                    </button>
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </div>
+                                        <!-- Nút thêm vào giỏ -->
+                                        <c:choose>
+                                            <c:when test="${product.stockQuantity > 0}">
+                                                <button class="btn btn-primary w-100 add-to-cart" 
+                                                        data-id="${product.productId}">
+                                                    <i class="bi bi-cart-plus"></i> Thêm vào giỏ
+                                                </button>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <button class="btn btn-secondary w-100" disabled>
+                                                    Hết hàng
+                                                </button>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </div>
                                 </div>
-                            </c:forEach>
-                        </c:when>
-                        <c:otherwise>
-                            <div class="col-12 text-center">
-                                <p>Không tìm thấy sản phẩm nào.</p>
                             </div>
-                        </c:otherwise>
-                    </c:choose>
-                </div>
+                        </c:forEach>
+                    </c:when>
+                    <c:otherwise>
+                        <div class="col-12 text-center">
+                            <p>Không tìm thấy sản phẩm nào.</p>
+                        </div>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </div>
-
-        <!-- Phân trang -->
-        <c:if test="${totalPages > 1}">
-            <nav aria-label="Page navigation" class="mt-4">
-                <ul class="pagination justify-content-center">
-                    <!-- Nút Previous -->
-                    <c:choose>
-                        <c:when test="${currentPage > 1}">
-                            <li class="page-item">
-                                <a class="page-link" href="products?page=${currentPage - 1}${not empty categoryId ? '&category='.concat(categoryId) : ''}${not empty sortBy ? '&sort='.concat(sortBy) : ''}" aria-label="Previous">
-                                    <span aria-hidden="true">&laquo;</span>
-                                </a>
-                            </li>
-                        </c:when>
-                        <c:otherwise>
-                            <li class="page-item disabled">
-                                <a class="page-link" href="#" aria-label="Previous">
-                                    <span aria-hidden="true">&laquo;</span>
-                                </a>
-                            </li>
-                        </c:otherwise>
-                    </c:choose>
-
-                    <!-- Các số trang -->
-                    <c:forEach begin="1" end="${totalPages}" var="i">
-                        <c:choose>
-                            <c:when test="${currentPage == i}">
-                                <li class="page-item active">
-                                    <a class="page-link" href="#">${i}</a>
-                                </li>
-                            </c:when>
-                            <c:otherwise>
-                                <li class="page-item">
-                                    <a class="page-link" href="products?page=${i}${not empty categoryId ? '&category='.concat(categoryId) : ''}${not empty sortBy ? '&sort='.concat(sortBy) : ''}">${i}</a>
-                                </li>
-                            </c:otherwise>
-                        </c:choose>
-                    </c:forEach>
-
-                    <!-- Nút Next -->
-                    <c:choose>
-                        <c:when test="${currentPage < totalPages}">
-                            <li class="page-item">
-                                <a class="page-link" href="products?page=${currentPage + 1}${not empty categoryId ? '&category='.concat(categoryId) : ''}${not empty sortBy ? '&sort='.concat(sortBy) : ''}" aria-label="Next">
-                                    <span aria-hidden="true">&raquo;</span>
-                                </a>
-                            </li>
-                        </c:when>
-                        <c:otherwise>
-                            <li class="page-item disabled">
-                                <a class="page-link" href="#" aria-label="Next">
-                                    <span aria-hidden="true">&raquo;</span>
-                                </a>
-                            </li>
-                        </c:otherwise>
-                    </c:choose>
-                </ul>
-            </nav>
-        </c:if>
     </div>
+
+    <!-- Phân trang - giữ nguyên không thay đổi -->
+    <c:if test="${totalPages > 1}">
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+                <!-- Nút Previous -->
+                <c:choose>
+                    <c:when test="${currentPage > 1}">
+                        <li class="page-item">
+                            <a class="page-link" href="products?page=${currentPage - 1}${not empty categoryId ? '&category='.concat(categoryId) : ''}${not empty sortBy ? '&sort='.concat(sortBy) : ''}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    </c:when>
+                    <c:otherwise>
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    </c:otherwise>
+                </c:choose>
+
+                <!-- Các số trang -->
+                <c:forEach begin="1" end="${totalPages}" var="i">
+                    <c:choose>
+                        <c:when test="${currentPage == i}">
+                            <li class="page-item active">
+                                <a class="page-link" href="#">${i}</a>
+                            </li>
+                        </c:when>
+                        <c:otherwise>
+                            <li class="page-item">
+                                <a class="page-link" href="products?page=${i}${not empty categoryId ? '&category='.concat(categoryId) : ''}${not empty sortBy ? '&sort='.concat(sortBy) : ''}">${i}</a>
+                            </li>
+                        </c:otherwise>
+                    </c:choose>
+                </c:forEach>
+
+                <!-- Nút Next -->
+                <c:choose>
+                    <c:when test="${currentPage < totalPages}">
+                        <li class="page-item">
+                            <a class="page-link" href="products?page=${currentPage + 1}${not empty categoryId ? '&category='.concat(categoryId) : ''}${not empty sortBy ? '&sort='.concat(sortBy) : ''}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </c:when>
+                    <c:otherwise>
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </c:otherwise>
+                </c:choose>
+            </ul>
+        </nav>
+    </c:if>
+
 
     <!-- Footer -->
     <footer>
@@ -774,6 +828,7 @@
         </div>
     </div>
 
+
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -846,6 +901,24 @@
                         this.textContent = 'Không còn sản phẩm';
                         this.disabled = true;
                     });
+                    // JavaScript để xử lý click vào sản phẩm
+                    document.addEventListener('DOMContentLoaded', function () {
+                        document.querySelectorAll('.product-card').forEach(card => {
+                            card.addEventListener('click', function (e) {
+                                // Ngăn chặn sự kiện click khi nhấn vào nút "Thêm vào giỏ"
+                                if (e.target.closest('.add-to-cart') || e.target.closest('button')) {
+                                    return;
+                                }
+
+                                // Lấy URL từ liên kết sản phẩm
+                                const productLink = this.querySelector('.product-link');
+                                if (productLink) {
+                                    window.location.href = productLink.getAttribute('href');
+                                }
+                            });
+                        });
+                    });
+
     </script>
 </body>
 </html>

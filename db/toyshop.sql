@@ -3,7 +3,7 @@ CREATE TABLE Roles (
     role_id INT IDENTITY(1,1) PRIMARY KEY,
     role_name VARCHAR(50) NOT NULL UNIQUE
 );
-select * from Roles
+select * from Users
 -- 2. Tạo bảng Users (phụ thuộc vào Roles)
 CREATE TABLE Users (
     user_id INT IDENTITY(1,1) PRIMARY KEY,
@@ -42,6 +42,7 @@ ALTER TABLE Products
 ADD is_featured BIT DEFAULT 0, -- Đánh dấu sản phẩm có phải là nổi bật hay không (0: không, 1: có)
     featured_order INT NULL,   -- Thứ tự hiển thị của sản phẩm nổi bật
     featured_until DATE NULL;  -- Ngày hết hạn của sản phẩm nổi bật (NULL nếu không giới hạn)
+	ALTER TABLE Products add role_id int null
 	select * from Products
 
 -- 5. Tạo bảng Discounts (bảng độc lập)
@@ -209,109 +210,15 @@ ORDER BY product_id DESC;
 
 
 
-
-
--- 1. Thêm dữ liệu vào bảng Categories
-INSERT INTO Categories (category_name) VALUES 
-(N'Điện thoại'),
-(N'Laptop'),
-(N'Tablet'),
-(N'Phụ kiện');
--- Thêm một số sản phẩm vào danh sách nổi bật
--- 2. Thêm dữ liệu vào bảng Products
-INSERT INTO Products (name, description, price, stock_quantity, category_id, image_url) 
+INSERT INTO Products (name, description, price, stock_quantity, category_id, image_url, role_id) 
 VALUES
-(N'zoro', 
-N'iPhone 14 Pro Max 128GB - Smartphone cao cấp với màn hình 6.7 inch, chip A16 Bionic',
-400000000.00, 
-50,
+('Mô hình GOKU', 
+N'Mô hình GOKU đứng siêu ngầu xịn đét, cao 42cm, nặng 2kg, đóng hộp carton',
+2090000.00, -- Giá đã được điều chỉnh phù hợp với mô hình figure
 1,
-'resources/product/figure/zoro.jpg');
-INSERT INTO Products (name, description, price, stock_quantity, category_id, image_url) 
-VALUES
-(N'figure dep zoro', 
-N'iPhone 14 Pro Max 128GB - Smartphone cao cấp với màn hình 6.7 inch, chip A16 Bionic',
-22390000.00, 
-1,
-1,
-'resources/product/figure/zoro.jpg'),
-(N'figure dep zoro', 
-N'iPhone 14 Pro Max 128GB - Smartphone cao cấp với màn hình 6.7 inch, chip A16 Bionic',
-22390000.00, 
-2,
-2,
-'resources/product/figure/zoro.jpg');
-select * from users
-
-(N'Samsung Galaxy S23 Ultra', 
-N'Samsung Galaxy S23 Ultra với bút S-Pen, camera 200MP, chip Snapdragon 8 Gen 2',
-25990000.00,
-45,
-1,
-'images/products/s23ultra.jpg'),
-
-(N'Xiaomi 13 Pro',
-N'Xiaomi 13 Pro với camera Leica, chip Snapdragon 8 Gen 2, sạc nhanh 120W',
-22990000.00,
-30,
-1,
-'images/products/xiaomi13pro.jpg'),
-
--- Laptop (category_id = 2)
-(N'MacBook Pro 14 M2',
-N'Laptop MacBook Pro 14 inch với chip M2 Pro, 16GB RAM, 512GB SSD',
-45990000.00,
-25,
-2,
-'images/products/macbookpro14.jpg'),
-
-(N'Dell XPS 13 Plus',
-N'Dell XPS 13 Plus với Intel Core i7 gen 12, 16GB RAM, 512GB SSD',
-35990000.00,
-20,
-2,
-'images/products/dellxps13.jpg'),
-
--- Tablet (category_id = 3)
-(N'iPad Pro 12.9 2022',
-N'iPad Pro 12.9 inch 2022 với chip M2, màn hình Mini LED, hỗ trợ Apple Pencil 2',
-28990000.00,
-35,
-3,
-'images/products/ipadpro2022.jpg'),
-
-(N'Samsung Galaxy Tab S9 Ultra',
-N'Samsung Galaxy Tab S9 Ultra với màn hình 14.6 inch, S-Pen, chip Snapdragon 8 Gen 2',
-24990000.00,
-25,
-3,
-'images/products/tabs9ultra.jpg'),
-
--- Phụ kiện (category_id = 4)
-(N'Apple AirPods Pro 2',
-N'Tai nghe không dây Apple AirPods Pro 2 với chống ồn chủ động, âm thanh không gian',
-5990000.00,
-100,
-4,
-'images/products/airpodspro2.jpg'),
-
-(N'Samsung Galaxy Watch 5 Pro',
-N'Đồng hồ thông minh Samsung Galaxy Watch 5 Pro với GPS, đo sức khỏe',
-8990000.00,
-40,
-4,
-'images/products/watch5pro.jpg'),
-
-(N'Anker PowerCore 26800',
-N'Pin sạc dự phòng Anker PowerCore 26800mAh với 3 cổng USB',
-1290000.00,
-150,
-4,
-'images/products/anker26800.jpg');
-
-
--- Kiểm tra dữ liệu Categories
-select * FROM Products;
+1, -- Giả sử category_id 1 là danh mục figure/mô hình
+'resources/product/figure/mo-hinh-songoku-vo-cuc-3-dau-thay-the-cao-52cm-nang-4kg-co-hop-carton-12-400x400.jpg',
+1);
 
 -- Kiểm tra dữ liệu Products
 SELECT p.*, c.category_name 
@@ -320,7 +227,7 @@ JOIN Categories c ON p.category_id = c.category_id
 ORDER BY p.product_id;
 
 select * from users
-select * from Products
+delete from Products
 
 UPDATE Products
 SET is_featured = 1, 
@@ -334,5 +241,45 @@ SET is_featured = 1,
     featured_order = 2, 
     featured_until = '2025-11-30'
 WHERE product_id = 50;
-select * from users
-update users set role_id = 1 where user_id = 8
+select * from Products
+SET description = N'iPhone 14 Pro Max 128GB - Smartphone cao cấp với màn hình 6.7 inch, chip A16 Bionic'
+WHERE description LIKE '%c?p v?i%';
+
+INSERT INTO Products (name, description, price, stock_quantity, category_id, image_url, role_id) 
+VALUES
+(N'Zoro', N'vac kiem dau cuon khan', 3200000, 10, 2, 'resources/product/figure/mo-hinh-zoro-vac-kiem-dau-quan-khan-cao-20cm-nang-500g-no-box-2-400x400.jpg', 1),
+(N'Zoro', N'cam kiem cao 20cm', 2500000, 20, 2, 'resources/product/figure/mo-hinh-zoro-cam-kiem-dau-tran-cao-20cm-nang-500gr-no-box-7-400x400.jpg', 1),
+(N'Songoku', N'3 dau thay the', 2600000, 20, 2, 'resources/product/figure/mo-hinh-songoku-vo-cuc-3-dau-thay-the-cao-52cm-nang-4kg-co-hop-carton-12-400x400.jpg', 1),
+(N'Songoku', N'ssj3', 2600000, 20, 2, 'resources/product/figure/mo-hinh-songoku-ssj3-base-sieu-chat-cao-40cm-nang-3900gr-co-hop-mau-10-400x400.jpg', 1),
+(N'Naruto', N'luc dao', 2500000, 25, 2, 'resources/product/figure/mo-hinh-naruto-luc-dao-cuu-vi-rasengan-cao-28cm-nang-15kg-co-hop-mau-6-400x400.jpg', 1),
+(N'Naruto', N'dang dung sieu ngau', 2000000, 20, 2, 'resources/product/figure/mo-hinh-naruto-dang-dung-sieu-ngau-co-base-cao-42cm-nang-2kg-hop-carton-_-10-400x400.jpg', 1),
+(N'Minato', N'dang dung sieu ngau', 2300000, 20, 2, 'resources/product/figure/mo-hinh-minato-dang-dung-sieu-ngau-cao-25cm-nang-300gr-no-box-2-400x400.jpg', 1),
+(N'Luffy', N'gear5', 3200000, 25, 2,'resources/product/figure/mo-hinh-luffy-gear-5-trang-thai-chien-dau-cao-21cm-nang-1kg-hop-carton-1-402x400.png', 1),
+(N'Naruto', N'combo 7 nhan vat', 2500000, 20, 2, 'resources/product/figure/mo-hinh-do-choi-naruto-combo12-nhan-vat-cao-7cm-nang-250gr-no-box-2-400x400.png', 1),
+(N'Chibi', N'6 trang thai', 1500000, 15, 2, 'resources/product/figure/mo-hinh-chibi-6-trang-thai-luffy-gear-5-cao-10cm-nang-250gr-no-box-_-10-400x400.jpg', 1),
+(N'Luffy', N'trang thai nika', 1200000, 20, 2, 'resources/product/figure/mo-hinh-bo-5-luffy-gear-5-trang-thai-nika-cao-12cm-nang-400g-no-box-8-400x400.jpg', 1),
+(N'Luffy', N'gear6', 1300000, 15, 2, 'resources/product/figure/mo-hinh-bo-5-luffy-gear-4-trang-thai-snack-man-cao-9-10cm-nang-300g-co-hop-2-400x400.jpg', 1),
+(N'Batman', N'The classic TV series batmobile', 4500000, 10, 1, 'resources/product/lego/Batman™_ The Classic TV Series Batmobile™.png', 3),
+(N'Battlebus', N'11zon', 4800000, 10, 1, 'resources/product/lego/battle bus_11zon.png', 3),
+(N'Disney Tim Burton', N'The nightmare before christmas', 3500000, 10, 1, 'resources/product/lego/Disney Tim Burton_s The Nightmare Before Christmas_11zon.png', 3),
+(N'Ferrari', N'SF-24', 6500000, 10, 1, 'resources/product/lego/Ferrari SF-24 F1 Car_11zon.png', 3),
+(N'Love', N'11', 2300000, 5, 1, 'resources/product/lego/LOVE_11zon.png', 3),
+(N'Disney', N'Mini Castle', 4000000, 9, 1, 'resources/product/lego/Mini Disney Castle_11zon.png', 3),
+(N'Porsche', N'911', 8000000, 12, 1,'resources/product/lego/Porsche 911_11zon.png', 3),
+(N'SpiderMan', N'Mask', 3500000, 15, 1, 'resources/product/lego/Spider-Man_s Mask_11zon.png', 3),
+(N'Tranquil Garden', N'Garden', 1500000, 10, 1, 'resources/product/lego/Tranquil Garden_11zon.png', 3),
+(N'Tuxedo Cat', N'Cat', 2400000, 10, 1, 'resources/product/lego/Tuxedo Cat_11zon.png', 3),
+(N'Wednesday & Enid', N'Dorm Room', 2500000, 8, 1, 'resources/product/lego/Wednesday & Enid_s Dorm Room_11zon.png', 3),
+(N'Welcome to Emerald City', N'Emerald City', 1200000, 5, 1, 'resources/product/lego/Welcome to Emerald City_11zon.png', 3),
+('Baby Three', 'Set Búp Bê Baby Three Nhiều Màu', 400000, 10, 3, 'resources/product/blindbox/set-bup-be-baby-three-nhieu-mau_11zon.png', 2),
+('Baby Three', 'Set Búp Bê Baby Three BabyThree BB3 Shio Chinese Zodiac Blindbox 6 Màu Phối Màu Ngẫu Nhiên', 500000, 12, 3, '/resources/product/blindbox/set-bup-be-baby-three-babythree-bb3-shio-chinese-zodiac-blindbox-6-mau-phoi-mau-ngau-nhien_11zon.png', 2),
+('Baby Three', 'Búp Bê Baby Three V3 Vinyl Plush Dinosaur Màu Xanh Lá', 600000, 15, 3, 'resources/product/blindbox/bup-be-baby-three-v3-vinyl-plush-dinosaur-mau-xanh-la-66f4e3b343e26-26092024113147_11zon.png', 2),
+('Baby Three', 'Búp Bê Baby Three V3 Check Card Blindbox Thỏ Màu Hồng', 700000, 13, 3, 'resources/product/blindbox/bup-be-baby-three-v3-check-card-blindbox-tho-mau-hong_11zon.png', 2),
+('Baby Three', 'Búp Bê Baby Three Chinese Zodiac Plush Doll', 800000, 11, 3, 'resources/product/blindbox/bup-be-baby-three-chinese-zodiac-plush-doll_11zon.png', 2),
+('Baby Three', 'Romantic Ocean Plush Series Blind Box', 900000, 14, 3, 'resources/product/blindbox/Baby Three Romantic Ocean Plush Series Blind Box_11zon.png', 2),
+('Baby Three', 'New Year', 1000000, 10, 3, 'resources/product/blindbox/Baby Three New Year_11zon.png', 2),
+('Baby Three', 'Lucky Cat', 1100000, 15, 3, 'resources/product/blindbox/Baby Three Lucky Cat_11zon.png', 2),
+('Baby Three', 'Elf Plush Series Blind Box', 1200000, 12, 3, 'resources/product/blindbox/Baby Three Elf Plush Series Blind Box_11zon.png', 2),
+('Baby Three', 'Christmas 400_ Limited Plush Series Blind Box', 400000, 13, 3, 'resources/product/blindbox/Baby Three Christmas 400_ Limited Plush Series Blind Box_11zon.png', 2),
+('Baby Three', 'Children Wonderland Plush Series Blind Box', 500000, 11, 3, 'resources/product/blindbox/Baby Three Children Wonderland Plush Series Blind Box_11zon.png', 2),
+('Baby Three', '400__', 600000, 14, 3, 'resources/product/blindbox/Baby Three 400__11zon.png', 2)
