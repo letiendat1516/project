@@ -103,4 +103,96 @@ public class UserDAO {
             return stmt.executeUpdate() > 0;
         }
     }
+    /**
+     * Lấy tổng số người dùng trong hệ thống
+     * @return Tổng số người dùng
+     */
+    public int getTotalUsers() throws Exception {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM Users";
+        
+        try (Connection conn = new DBContext().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+            
+        } catch (SQLException e) {
+            System.out.println("Error in getTotalUsers: " + e.getMessage());
+        }
+        
+        return count;
+    }
+    
+    /**
+     * Lấy danh sách tất cả người dùng
+     * @return Danh sách người dùng
+     */
+    public List<User> getAllUsers() throws Exception {
+        List<User> users = new ArrayList<>();
+        String sql = "SELECT u.*, r.role_name FROM Users u LEFT JOIN Roles r ON u.role_id = r.role_id";
+        
+        try (Connection conn = new DBContext().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            
+            while (rs.next()) {
+                User user = new User();
+                user.setUserId(rs.getInt("user_id"));
+                user.setFullName(rs.getString("full_name"));
+                user.setEmail(rs.getString("email"));
+                user.setPhone(rs.getString("phone"));
+                // Không lấy mật khẩu vì lý do bảo mật
+                
+                // Xử lý role_id có thể null
+                int roleId = rs.getInt("role_id");
+                if (!rs.wasNull()) {
+                    user.setRoleId(roleId);
+                }
+                
+                user.setCreatedAt(rs.getTimestamp("created_at"));
+                
+                users.add(user);
+            }
+            
+        } catch (SQLException e) {
+            System.out.println("Error in getAllUsers: " + e.getMessage());
+        }
+        
+        return users;
+    }
+    public User getUserById(int userId) throws Exception {
+    String sql = "SELECT u.*, r.role_name FROM Users u LEFT JOIN Roles r ON u.role_id = r.role_id WHERE u.user_id = ?";
+    
+    try (Connection conn = db.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        
+        stmt.setInt(1, userId);
+        
+        try (ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                User user = new User();
+                user.setUserId(rs.getInt("user_id"));
+                user.setFullName(rs.getString("full_name"));
+                user.setEmail(rs.getString("email"));
+                user.setPhone(rs.getString("phone"));
+                
+                // Xử lý role_id có thể null
+                int roleId = rs.getInt("role_id");
+                if (!rs.wasNull()) {
+                    user.setRoleId(roleId);
+                }
+                
+                user.setCreatedAt(rs.getTimestamp("created_at"));
+                user.setIsActive(rs.getBoolean("is_active"));
+                // Không lấy mật khẩu vì lý do bảo mật
+                
+                return user;
+            }
+        }
+        return null;
+    }
+    }
 }

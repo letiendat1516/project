@@ -57,7 +57,7 @@ public class LoginServlet extends HttpServlet {
                 // Chuyển hướng dựa vào role
                 switch (user.getRoleId()) {
                     case 1: // Admin
-                        response.sendRedirect(request.getContextPath() + "/admin.jsp");
+                        response.sendRedirect(request.getContextPath() + "/admin");
                         break;
                     case 2: // User thường
                         response.sendRedirect(request.getContextPath() + "/home");

@@ -5,13 +5,11 @@ import model.Product;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.Comparator;
 
 @WebServlet(name = "ProductServlet", urlPatterns = {"/products"})
 public class ProductServlet extends HttpServlet {
@@ -47,17 +45,6 @@ public class ProductServlet extends HttpServlet {
             }
         }
 
-        // Lấy tham số lọc theo role (nếu có)
-        String roleIdStr = request.getParameter("role");
-        Integer roleId = null;
-        if (roleIdStr != null && !roleIdStr.isEmpty()) {
-            try {
-                roleId = Integer.parseInt(roleIdStr);
-            } catch (NumberFormatException e) {
-                // Bỏ qua nếu có lỗi
-            }
-        }
-
         // Lấy tham số sắp xếp (nếu có)
         String sortBy = request.getParameter("sort");
 
@@ -70,51 +57,16 @@ public class ProductServlet extends HttpServlet {
         // Lấy danh sách sản phẩm theo điều kiện lọc
         List<Product> products;
 
-        if (roleId != null) {
-            // Lọc theo role VÀ sắp xếp (thay đổi ở đây)
-            products = productDAO.getProductsByRoleAndSort(roleId, sortBy);
-            totalProducts = products.size();
-
-            // Phân trang thủ công
+        if (categoryId != null) {
+            // Lọc theo danh mục VÀ sắp xếp
+            products = productDAO.getProductsByCategoryAndSort(categoryId, sortBy);
+            totalProducts = productDAO.getTotalProductsByCategory(categoryId);
+            
+            // Phân trang thủ công nếu cần
             int startIndex = (page - 1) * PRODUCTS_PER_PAGE;
-            int endIndex = Math.min(startIndex + PRODUCTS_PER_PAGE, totalProducts);
-
-            if (startIndex < totalProducts) {
-                products = products.subList(startIndex, endIndex);
-            } else {
-                products = List.of(); // Trả về danh sách rỗng nếu trang không hợp lệ
-            }
-        } else if (categoryId != null) {
-            // Lọc theo danh mục
-            products = productDAO.getProductsByCategory(categoryId);
-            totalProducts = products.size();
-
-            // Áp dụng sắp xếp thủ công nếu cần (thêm mới)
-            if (sortBy != null) {
-                switch (sortBy) {
-                    case "price_asc":
-                        products.sort(Comparator.comparing(Product::getPrice));
-                        break;
-                    case "price_desc":
-                        products.sort(Comparator.comparing(Product::getPrice).reversed());
-                        break;
-                    case "name_asc":
-                        products.sort(Comparator.comparing(Product::getName));
-                        break;
-                    case "newest":
-                        products.sort(Comparator.comparing(Product::getCreatedAt).reversed());
-                        break;
-                    default:
-                        // Không sắp xếp
-                        break;
-                }
-            }
-
-            // Phân trang thủ công
-            int startIndex = (page - 1) * PRODUCTS_PER_PAGE;
-            int endIndex = Math.min(startIndex + PRODUCTS_PER_PAGE, totalProducts);
-
-            if (startIndex < totalProducts) {
+            int endIndex = Math.min(startIndex + PRODUCTS_PER_PAGE, products.size());
+            
+            if (startIndex < products.size()) {
                 products = products.subList(startIndex, endIndex);
             } else {
                 products = List.of(); // Trả về danh sách rỗng nếu trang không hợp lệ
@@ -128,14 +80,14 @@ public class ProductServlet extends HttpServlet {
         // Tính tổng số trang
         int totalPages = (int) Math.ceil((double) totalProducts / PRODUCTS_PER_PAGE);
 
-        // Lấy danh sách sản phẩm nổi bật để hiển thị ở đầu trang (nếu cần)
+        // Lấy danh sách sản phẩm nổi bật để hiển thị ở đầu trang
         List<Product> featuredProducts = productDAO.getFeaturedProducts();
 
-        // Tạo map chứa các role
-        Map<Integer, String> roles = new HashMap<>();
-        roles.put(1, "Mô hình");
-        roles.put(2, "Túi mù");
-        roles.put(3, "Lego");
+        // Lấy danh sách tất cả các danh mục từ database
+        Map<Integer, String> categories = productDAO.getAllCategories();
+        
+        // Đếm số lượng sản phẩm theo từng danh mục
+        Map<Integer, Integer> categoryCounts = productDAO.countProductsByCategory();
 
         // Đặt các thuộc tính vào request
         request.setAttribute("products", products);
@@ -143,8 +95,8 @@ public class ProductServlet extends HttpServlet {
         request.setAttribute("currentPage", page);
         request.setAttribute("totalPages", totalPages);
         request.setAttribute("categoryId", categoryId);
-        request.setAttribute("roleId", roleId);
-        request.setAttribute("roles", roles);
+        request.setAttribute("categories", categories);
+        request.setAttribute("categoryCounts", categoryCounts);
         request.setAttribute("sortBy", sortBy);
 
         // Chuyển hướng đến trang product.jsp

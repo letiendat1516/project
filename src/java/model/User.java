@@ -26,6 +26,15 @@ public class User {
     private int roleId;
     private boolean isActive;
     private Date createdAt;
+    private String address;
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
     
     // Constructor mặc định
     public User() {
